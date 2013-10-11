@@ -295,6 +295,9 @@ class ReverseMode extends Pivot
 
 # exporting
 if exports? and module and module.exports
-	exports.Sequencer = Sequencer
+	exports.Sequencer   = Sequencer
+	exports.LinearMode  = LinearMode
+	exports.RepeatMode  = RepeatMode
+	exports.ReverseMode = ReverseMode
 else if window
 	window.Sequencer = Sequencer
