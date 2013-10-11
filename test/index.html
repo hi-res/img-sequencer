@@ -1,0 +1,37 @@
+<html>
+<head>
+	<title>Sequencer test</title>
+
+</head>
+<body>
+
+	<div id="container"></div>
+
+	<script src="./vendors/jquery-2.0.3.min.js"></script>
+
+	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
+	<script src="../node_modules/the-pivot/lib/index.js"></script>	
+
+	<script src="../lib/sequencer.js"></script>
+
+	<script>
+
+
+		window.sequencer = new Sequencer('container');
+
+		sequencer.on('setup_complete', function(){
+				
+
+			sequencer.set_mode(new LinearMode(sequencer.data))
+			// sequencer.set_mode(new RepeatMode(sequencer.data))
+			// sequencer.set_mode(new ReverseMode(sequencer.data))
+			
+			sequencer.play()
+		});
+
+		sequencer.load('./img/output/sd', 'frames.json');
+
+	</script>
+
+</body>
+</html>
