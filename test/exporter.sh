@@ -1,0 +1,1 @@
+python ../scripts/exporter.py --config config.json
