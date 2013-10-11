@@ -37,6 +37,11 @@ re-publish:
 	git push origin master -f
 	npm publish -f
 
+
+test-server:
+ 
+	python -m SimpleHTTPServer 8080
+
 tester:
 
 	@echo 'Running exporter test'
