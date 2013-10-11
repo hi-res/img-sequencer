@@ -1,0 +1,21 @@
+{
+  "name": "spritesheeter",
+  "version": "0.0.0",
+  "description": "An image sequence utility for the web",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "make tester"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davidpaulrosser/spritesheeter.git"
+  },
+  "author": "David Paul Rosser <info@davidpaulrosser.co.uk> (http://davidpaulrosser.co.uk/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidpaulrosser/spritesheeter/issues"
+  }
+}
