@@ -12,19 +12,19 @@
 	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
 	<script src="../node_modules/the-pivot/lib/index.js"></script>	
 
-	<script src="../lib/sequencer.js"></script>
+	<script src="../lib/index.js"></script>
 
 	<script>
 
 
-		player = new Sequencer.Player('container');
+		var player = new Sequencer.Player('container');
 
 		player.on('setup_complete', function(){
 				
 
-			// player.set_mode(new Sequencer.LinearMode(player.data))
+			player.set_mode(new Sequencer.LinearMode(player.data))
 			// player.set_mode(new Sequencer.RepeatMode(player.data))
-			player.set_mode(new Sequencer.ReverseMode(player.data))
+			// player.set_mode(new Sequencer.ReverseMode(player.data))
 			
 			player.play()
 		});

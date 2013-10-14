@@ -12,7 +12,7 @@
 	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
 	<script src="../node_modules/the-pivot/lib/index.js"></script>	
 
-	<script src="../lib/sequencer.js"></script>
+	<script src="../lib/index.js"></script>
 
 	<script>
 
@@ -25,8 +25,6 @@
 
 			player.set_mode(mode);	
 
-			console.log(mode);
-
 			window.addEventListener('mousemove', function(event){
 
 				var frame = Math.floor((event.pageX / window.innerWidth) * player.get_total_frames());
@@ -37,7 +35,7 @@
 
 		});
 
-		player.load('./img/output/sd', 'frames.json');
+		player.load('../test/img/output/sd', 'frames.json');
 
 	</script>
 
