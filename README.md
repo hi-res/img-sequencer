@@ -10,12 +10,12 @@ make setup
 
 ## Testing
 
-For now just preview the sequencer working in the browser
+*todo*
+
+## Examples
 
 ```
 make test-server
 ```
 
-And open ```test/index.html```
-
-Proper tests to come soon
+And open ```examples/modes.html```
