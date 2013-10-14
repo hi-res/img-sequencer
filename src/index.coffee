@@ -16,7 +16,11 @@ class Sequencer.ImageLoader extends Pivot
 		img = new Image()
 
 		img.src = path
-		img.dataset.frame = frame 
+
+		if img.dataset?
+			img.dataset.frame = frame 
+		else
+			img.setAttribute('data-frame', frame)
 
 		img.onload = =>
 			@trigger 'complete', img
@@ -28,7 +32,7 @@ class Sequencer.Player extends Pivot
 	retina          : window.devicePixelRatio is 2
 	chrome 		    : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
 	el              : null
-	current_frame   : null
+	current_frame   : 0
 	mode 			: null
 	dev 			: true
 
@@ -45,7 +49,6 @@ class Sequencer.Player extends Pivot
 
 		(animloop = =>
 			window.requestAnimFrame animloop
-			
 			@trigger 'tick'
 		)()
 		
@@ -55,21 +58,26 @@ class Sequencer.Player extends Pivot
 	###
 	_load_images: =>
 
-		@_cache  = []
-
-		counter = 0
-		total_frames = @data.total_frames
+		@_cache 	 = []
+		loaded  	 = 0
+		total_frames = @get_total_frames()
 
 		on_load_complete = (img) =>
 
-			counter++
+			if img.dataset?
+				id = img.dataset.frame
+			else
+				id = img.getAttribute 'data-frame'
 
-			if counter is total_frames
+			@_cache[id] = img
+
+			if loaded is total_frames
 				@_setup()
 
-			@_cache[img.dataset.frame] = img
-		
-		for frame in [0...total_frames]
+			loaded++
+			
+
+		for frame in [0..total_frames]
 
 			# Use webp if chrome and webp is supported
 			if @chrome
@@ -105,7 +113,7 @@ class Sequencer.Player extends Pivot
 		@container.style.width  = @el.style.width
 		@container.style.height = @el.style.height
 
-		for img in @_cache
+		for img, i in @_cache
 
 			img.style.position   = 'absolute'
 			img.style.width      = '100%'
@@ -113,7 +121,7 @@ class Sequencer.Player extends Pivot
 
 			@container.appendChild img
 
-		@trigger 'setup_complete'
+		@trigger 'setup_complete', @
 
 
 
@@ -126,6 +134,7 @@ class Sequencer.Player extends Pivot
 
 			# Hide the last image it it exists
 			if @_cache[@current_frame]?
+
 				@_cache[@current_frame].style.visibility = 'hidden'
 				@_cache[@current_frame].style.zIndex = 0
 
@@ -162,7 +171,7 @@ class Sequencer.Player extends Pivot
 		$.ajax
 			url: @path + '/' + frames,
 			complete: (data) =>
-				@data = data.responseJSON
+				@data = JSON.parse data.responseText
 				@_load_images() 
 			error: (error) => 
 				#@log error
@@ -254,6 +263,7 @@ class Sequencer.LinearMode extends Pivot
 
 	id: 'Linear'
 	frame: 0
+	speed: 1
 
 	constructor: (@data) ->
 
@@ -264,9 +274,9 @@ class Sequencer.LinearMode extends Pivot
 		if @frame >= @data.total_frames - 1
 			@trigger 'complete'
 		else
-			@frame++
+			@frame += @speed
 
-	get_frame: -> @frame
+	get_frame: -> Math.floor @frame
 
 
 ###
@@ -289,9 +299,9 @@ class Sequencer.RepeatMode extends Pivot
 		if @frame >= @data.total_frames - 1
 			@frame = 0
 		
-		@frame++
+		@frame += @speed
 
-	get_frame: -> @frame
+	get_frame: -> Math.floor @frame
 
 
 ###
@@ -319,7 +329,7 @@ class Sequencer.ReverseMode extends Pivot
 		
 		@frame += @speed
 
-	get_frame: -> @frame
+	get_frame: -> Math.floor @frame
 
 
 # exporting
