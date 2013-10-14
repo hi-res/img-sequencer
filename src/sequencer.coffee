@@ -4,7 +4,9 @@ window.requestAnimFrame = (->
 )()
 
 
-class ImageLoader
+Sequencer = Sequencer or {}
+
+class Sequencer.ImageLoader
 
 	constructor: (path, frame, callback) ->
 
@@ -17,7 +19,7 @@ class ImageLoader
 			callback img
 
 
-class Sequencer extends Pivot
+class Sequencer.Player extends Pivot
 
 	pixel_ratio     : window.devicePixelRatio
 	retina          : window.devicePixelRatio is 2
@@ -76,7 +78,7 @@ class Sequencer extends Pivot
 
 			path = @path + '/' + frame + '.' + file_ext
 
-			loader = new ImageLoader(path, frame, on_load_complete)
+			loader = new Sequencer.ImageLoader(path, frame, on_load_complete)
 
 	###
 	Setup the container
@@ -111,10 +113,6 @@ class Sequencer extends Pivot
 		@trigger 'setup_complete'
 
 
-	_tick: => 
-		@mode.update()
-		@_validate_frame()
-		@_update()
 
 	_update: =>
 
@@ -156,14 +154,14 @@ class Sequencer extends Pivot
 	@public
 	###
 
-	load: (@path, frames) ->
+	load: (@path, frames) =>
 
 		$.ajax
 			url: @path + '/' + frames,
 			complete: (data) =>
 				@data = data.responseJSON
 				@_load_images() 
-			error: (error) -> 
+			error: (error) => 
 				@log error
 
 	###
@@ -175,7 +173,7 @@ class Sequencer extends Pivot
 			console.warn 'Error --> Set a playback mode first'
 		else
 			@log 'play'
-			@on 'tick', @_tick
+			@on 'tick', @tick
 		
 
 	###
@@ -184,7 +182,7 @@ class Sequencer extends Pivot
 	stop: => 
 
 		@log 'stop'
-		@off 'tick', @_tick
+		@off 'tick', @tick
 		
 	###
 	Set the playback mode
@@ -202,6 +200,15 @@ class Sequencer extends Pivot
 		@mode.on 'complete', @stop
 
 
+	set_frame: (frame) =>
+
+
+	tick: => 
+		@mode.update()
+		@_validate_frame()
+		@_update()
+
+
 	###
 	Return the number of frames in the sequence
 	@return [Int]
@@ -217,11 +224,30 @@ Playback modes
 
 
 ###
+Frame mode
+
+Manually set the frame of the sequence
+###
+class Sequencer.FrameMode extends Pivot
+
+	id: 'FrameMode'
+	frame: 0
+
+	constructor: (@data) ->
+
+	update: ->
+
+	set_frame: (@frame) ->
+
+	get_frame: -> @frame
+
+
+###
 Linear mode
 
 Repeats the animation from frame 0 once it reaches the end
 ###
-class LinearMode extends Pivot
+class Sequencer.LinearMode extends Pivot
 
 	id: 'Linear'
 	frame: 0
@@ -245,7 +271,7 @@ RepeatMode
 
 Repeats the animation from frame 0 once it reaches the end
 ###
-class RepeatMode extends Pivot
+class Sequencer.RepeatMode extends Pivot
 
 	id: 'Repeat'
 	frame: 0
@@ -270,7 +296,7 @@ ReverseMode
 
 Plays the animation back and forth
 ###
-class ReverseMode extends Pivot
+class Sequencer.ReverseMode extends Pivot
 
 	id: 'Reverse'
 	frame: 0
@@ -295,9 +321,6 @@ class ReverseMode extends Pivot
 
 # exporting
 if exports? and module and module.exports
-	exports.Sequencer   = Sequencer
-	exports.LinearMode  = LinearMode
-	exports.RepeatMode  = RepeatMode
-	exports.ReverseMode = ReverseMode
+	exports.Sequencer = Sequencer
 else if window
 	window.Sequencer = Sequencer
