@@ -17,19 +17,19 @@
 	<script>
 
 
-		window.sequencer = new Sequencer('container');
+		player = new Sequencer.Player('container');
 
-		sequencer.on('setup_complete', function(){
+		player.on('setup_complete', function(){
 				
 
-			sequencer.set_mode(new LinearMode(sequencer.data))
-			// sequencer.set_mode(new RepeatMode(sequencer.data))
-			// sequencer.set_mode(new ReverseMode(sequencer.data))
+			// player.set_mode(new Sequencer.LinearMode(player.data))
+			// player.set_mode(new Sequencer.RepeatMode(player.data))
+			player.set_mode(new Sequencer.ReverseMode(player.data))
 			
-			sequencer.play()
+			player.play()
 		});
 
-		sequencer.load('./img/output/sd', 'frames.json');
+		player.load('../test/img/output/sd', 'frames.json');
 
 	</script>
 

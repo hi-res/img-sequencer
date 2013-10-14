@@ -1,0 +1,45 @@
+<html>
+<head>
+	<title>Sequencer test</title>
+
+</head>
+<body>
+
+	<div id="container"></div>
+
+	<script src="./vendors/jquery-2.0.3.min.js"></script>
+
+	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
+	<script src="../node_modules/the-pivot/lib/index.js"></script>	
+
+	<script src="../lib/sequencer.js"></script>
+
+	<script>
+
+
+		player = new Sequencer.Player('container');
+
+		player.on('setup_complete', function(){
+				
+			mode = new Sequencer.FrameMode(player.data)
+
+			player.set_mode(mode);	
+
+			console.log(mode);
+
+			window.addEventListener('mousemove', function(event){
+
+				var frame = Math.floor((event.pageX / window.innerWidth) * player.get_total_frames());
+
+				mode.set_frame(frame);
+				player.tick()
+			});
+
+		});
+
+		player.load('./img/output/sd', 'frames.json');
+
+	</script>
+
+</body>
+</html>
