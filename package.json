@@ -20,7 +20,6 @@
   },
   "devDependencies": {
     "coffee-script": "1.6.x",
-    "mversion": "0.2.0",
-    "the-pivot": "0.1.2"
+    "mversion": "0.2.0"
   }
 }
