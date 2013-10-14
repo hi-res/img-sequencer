@@ -1,14 +1,17 @@
-window.requestAnimFrame = (->
+
+if exports? and module and module.exports
+	Pivot    = require 'the-pivot' 
+
+window?.requestAnimFrame = (->
 	window.requestAnimationFrame or window.webkitRequestAnimationFrame or window.mozRequestAnimationFrame or (callback) ->
 		window.setTimeout callback, 1000 / 60
 )()
 
-
 Sequencer = Sequencer or {}
 
-class Sequencer.ImageLoader
+class Sequencer.ImageLoader extends Pivot
 
-	constructor: (path, frame, callback) ->
+	constructor: (path, frame) ->
 
 		img = new Image()
 
@@ -16,14 +19,14 @@ class Sequencer.ImageLoader
 		img.dataset.frame = frame 
 
 		img.onload = =>
-			callback img
+			@trigger 'complete', img
 
 
 class Sequencer.Player extends Pivot
 
 	pixel_ratio     : window.devicePixelRatio
 	retina          : window.devicePixelRatio is 2
-	chrome 		    : (navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
+	chrome 		    : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
 	el              : null
 	current_frame   : null
 	mode 			: null
@@ -78,7 +81,8 @@ class Sequencer.Player extends Pivot
 
 			path = @path + '/' + frame + '.' + file_ext
 
-			loader = new Sequencer.ImageLoader(path, frame, on_load_complete)
+			loader = new Sequencer.ImageLoader(path, frame)
+			loader.on 'complete', on_load_complete
 
 	###
 	Setup the container
@@ -108,7 +112,6 @@ class Sequencer.Player extends Pivot
 			img.style.height     = '100%'
 
 			@container.appendChild img
-
 
 		@trigger 'setup_complete'
 
@@ -162,7 +165,7 @@ class Sequencer.Player extends Pivot
 				@data = data.responseJSON
 				@_load_images() 
 			error: (error) => 
-				@log error
+				#@log error
 
 	###
 	Start playback on the current mode
@@ -172,7 +175,7 @@ class Sequencer.Player extends Pivot
 		unless @mode?
 			console.warn 'Error --> Set a playback mode first'
 		else
-			@log 'play'
+			#@log 'play'
 			@on 'tick', @tick
 		
 
@@ -181,7 +184,7 @@ class Sequencer.Player extends Pivot
 	###
 	stop: => 
 
-		@log 'stop'
+		#@log 'stop'
 		@off 'tick', @tick
 		
 	###
@@ -194,7 +197,7 @@ class Sequencer.Player extends Pivot
 		
 		@mode = mode
 
-		@log 'setting mode -->', @mode.id
+		#@log 'setting mode -->', @mode.id
 
 		# Add new events
 		@mode.on 'complete', @stop
@@ -321,6 +324,6 @@ class Sequencer.ReverseMode extends Pivot
 
 # exporting
 if exports? and module and module.exports
-	exports.Sequencer = Sequencer
+	module.exports = Sequencer
 else if window
 	window.Sequencer = Sequencer
