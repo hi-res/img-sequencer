@@ -117,8 +117,7 @@ def exporter(id, config):
 			if name[0] == '0':
 				renamed = True
 
-			index    = i - 1
-			name[0]  = "%s" % index
+			name[0]  = "%s" % i
 			new_name = '.'.join(name)
 
 			file_in  = SOURCE_DIR + '/' + file
