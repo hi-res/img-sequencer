@@ -1,6 +1,7 @@
 
 if exports? and module and module.exports
-	Pivot    = require 'the-pivot' 
+	Pivot = require 'the-pivot' 
+	Util  = require './util' 
 
 window?.requestAnimFrame = (->
 	window.requestAnimationFrame or window.webkitRequestAnimationFrame or window.mozRequestAnimationFrame or (callback) ->
@@ -28,13 +29,15 @@ class Sequencer.ImageLoader extends Pivot
 
 class Sequencer.Player extends Pivot
 
-	pixel_ratio     : window.devicePixelRatio
-	retina          : window.devicePixelRatio is 2
-	chrome 		    : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
-	el              : null
-	current_frame   : 0
-	mode 			: null
-	dev 			: true
+	pixel_ratio       : window.devicePixelRatio
+	retina            : window.devicePixelRatio is 2
+	chrome 		      : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
+	el                : null
+	current_frame     : -1
+	mode 			  : null
+	cssbackgroundsize : Modernizr.backgroundsize
+	dev 			  : true
+	tag_type          : 'div' # div or img
 
 	log: (args...) =>
 		console.log(args...) if @dev
@@ -100,29 +103,43 @@ class Sequencer.Player extends Pivot
 		scale  = (if @retina is true then 0.5 else 1)
 
 		# Scale for retina
-		@width  = @data.frame.width  * scale
-		@height = @data.frame.height * scale
+		width  = @data.frame.width  * scale
+		height = @data.frame.height * scale
 
-		# If the image needs scaling
-		@width  *= @data.frame.scale
-		@height *= @data.frame.scale
-
-		@el.style.width  = @width  + 'px'
-		@el.style.height = @height + 'px'
-
-		@container.style.width  = @el.style.width
-		@container.style.height = @el.style.height
+		@_frames = []
 
 		for img, i in @_cache
 
-			img.style.position   = 'absolute'
-			img.style.width      = '100%'
-			img.style.height     = '100%'
+			if @cssbackgroundsize
 
-			@container.appendChild img
+				el = document.createElement 'div'
+				el.style.position = 'absolute'
+				el.style.width    = '100%'
+				el.style.height   = '100%'
+				el.style.backgroundImage = "url(#{img.src})"
+				el.style.backgroundRepeat = "no-repeat"
+				el.style.visibility = 'hidden'
+
+			else
+
+				img.style.position   = 'absolute'
+				img.style.width      = '100%'
+				img.style.height     = '100%'
+				img.style.visibility = 'hidden'
+
+				@tag_type = 'img'
+
+				el = img
+
+			@_frames.push el
+
+			@container.appendChild el
+
+		@_cache = null
+
+		@set_size width, height
 
 		@trigger 'setup_complete', @
-
 
 
 	_update: =>
@@ -133,15 +150,15 @@ class Sequencer.Player extends Pivot
 		if frame isnt @current_frame
 
 			# Hide the last image it it exists
-			if @_cache[@current_frame]?
+			if @_frames[@current_frame]?
 
-				@_cache[@current_frame].style.visibility = 'hidden'
-				@_cache[@current_frame].style.zIndex = 0
+				@_frames[@current_frame].style.visibility = 'hidden'
+				@_frames[@current_frame].style.zIndex = 0
 
 			@current_frame = frame
 
-			@_cache[@current_frame].style.visibility = 'visible'
-			@_cache[@current_frame].style.zIndex = 1
+			@_frames[@current_frame].style.visibility = 'visible'
+			@_frames[@current_frame].style.zIndex = 1
 	
 
 
@@ -212,6 +229,19 @@ class Sequencer.Player extends Pivot
 		@mode.on 'complete', @stop
 
 
+	set_size: (@width, @height) =>
+
+		@el.style.width  = @width  + 'px'
+		@el.style.height = @height + 'px'
+
+		@container.style.width  = @el.style.width
+		@container.style.height = @el.style.height
+
+		$frames = $(@container).find @tag_type
+
+		Util.resize $frames, @data.frame.width, @data.frame.height, @width, @height, @cssbackgroundsize
+
+
 	set_frame: (frame) =>
 
 
@@ -227,6 +257,11 @@ class Sequencer.Player extends Pivot
 	###
 	get_total_frames: -> @data.total_frames - 1
 
+	destroy: ->
+
+		@stop()
+
+		@el.innerHTML = ''
 
 
 
