@@ -216,4 +216,4 @@ def exporter(id, config):
 
 # Run the exporter
 for config in CONFIGS:
-	exporter(config, CONFIGS[config][0])
+	exporter(config, CONFIGS[config])
