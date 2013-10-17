@@ -193,6 +193,18 @@ class Sequencer.Player extends Pivot
 			error: (error) => 
 				#@log error
 
+
+	noload: (@data, frames) ->
+
+		#@data = data.
+		@_cache = []
+
+		for img, i in frames.images
+			@_cache[i] = img.tag
+
+		@_setup()
+
+
 	###
 	Start playback on the current mode
 	###
