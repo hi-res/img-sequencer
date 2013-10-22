@@ -7,6 +7,7 @@
 
 	<div id="container"></div>
 
+	<script src="./vendors/modernizr.custom.78569.js"></script>
 	<script src="./vendors/jquery-2.0.3.min.js"></script>
 
 	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
@@ -18,6 +19,9 @@
 
 
 		var player = new Sequencer.Player('container');
+
+		if(Modernizr.backgroundsize)
+			player.cssbackgroundsize = true
 
 		player.on('setup_complete', function(){
 				
