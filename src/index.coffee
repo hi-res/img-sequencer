@@ -1,7 +1,6 @@
 
 if exports? and module and module.exports
 	Pivot = require 'the-pivot' 
-	Util  = require './util' 
 
 window?.requestAnimFrame = (->
 	window.requestAnimationFrame or window.webkitRequestAnimationFrame or window.mozRequestAnimationFrame or (callback) ->
