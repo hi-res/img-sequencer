@@ -1,4 +1,4 @@
-# Sequencer
+# img-sequencer
 
 Image sequence utility for the browser
 
