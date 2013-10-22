@@ -6,7 +6,6 @@ VERSION=0.0.1
 
 setup:
 
-	git clone http://github.com/davidpaulrosser/the-pivot -b sequencer ./node_modules/the-pivot
 	npm install
 
 watch:
