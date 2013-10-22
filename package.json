@@ -1,0 +1,25 @@
+{
+  "name": "img-sequencer",
+  "version": "0.0.1",
+  "description": "An image sequence utility for the browser.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/davidpaulrosser/img-sequencer.git"
+  },
+  "author": "David Paul Rosser <info@davidpaulrosser.co.uk> (http://davidpaulrosser.co.uk/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davidpaulrosser/img-sequencer/issues"
+  },
+  "devDependencies": {
+    "coffee-script": "1.6.x",
+    "mversion": "0.2.0"
+  },
+  "dependencies": {
+    "the-pivot": "~0.2.0"
+  }
+}

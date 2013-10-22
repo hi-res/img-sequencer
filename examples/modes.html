@@ -1,0 +1,41 @@
+<html>
+<head>
+	<title>Sequencer test</title>
+
+</head>
+<body>
+
+	<div id="container"></div>
+
+	<script src="./vendors/modernizr.custom.78569.js"></script>
+	<script src="./vendors/jquery-2.0.3.min.js"></script>
+
+	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
+	<script src="../node_modules/the-pivot/lib/index.js"></script>	
+
+	<script src="../lib/index.js"></script>
+
+	<script>
+
+
+		var player = new Sequencer.Player('container');
+
+		if(Modernizr.backgroundsize)
+			player.cssbackgroundsize = true
+
+		player.on('setup_complete', function(){
+				
+
+			player.set_mode(new Sequencer.LinearMode(player.data))
+			// player.set_mode(new Sequencer.RepeatMode(player.data))
+			// player.set_mode(new Sequencer.ReverseMode(player.data))
+			
+			player.play()
+		});
+
+		player.load('../test/img/output/sd', 'frames.json');
+
+	</script>
+
+</body>
+</html>
