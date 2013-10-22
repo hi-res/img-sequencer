@@ -9,30 +9,20 @@ from optparse import OptionParser
 
 
 """
-Spritesheet generator for chanel moonphase.
-
-
-Usage:
-
-	Run the command on the image sequence directory.
-
-	`python ss_generator.py --source <source>`
-
-	Adding the `--source-trim` flag will trim the whitespace from the image sequence first
-
-
 Dependencies:
+	
+	ImageMagick:
+	
+	brew install ImageMagick
 
-ImageMagick
+	Python Image Library:
 
-Python Image Library:
-
-`
-curl -O -L http://effbot.org/downloads/Imaging-1.1.7.tar.gz
-tar -xzf Imaging-1.1.7.tar.gz
-cd Imaging-1.1.7
-python setup.py build
-python setup.py install
+	`
+	curl -O -L http://effbot.org/downloads/Imaging-1.1.7.tar.gz
+	tar -xzf Imaging-1.1.7.tar.gz
+	cd Imaging-1.1.7
+	python setup.py build
+	python setup.py install
 	`
 """
 
@@ -52,8 +42,6 @@ if CONFIGS is None:
 	sys.exit('Json config is required to generate spritesheet')
 
 
-#print json.dumps(CONFIGS, sort_keys=True, indent=4)
-
 
 """
 	Run a sub process
@@ -67,7 +55,7 @@ def run_process(cmd):
 
 
 """
-	Generates the spritesheets and json for the specific platform
+	Generates the image sequences and json from the config
 
 	Parameters:
 		id      -- (string)
@@ -75,7 +63,6 @@ def run_process(cmd):
 """
 
 def exporter(id, config):
-
 
 	# Extract settings from the config
 	SOURCE_DIR  = config['source']
@@ -138,6 +125,7 @@ def exporter(id, config):
 	# Scale and save new images
 	length = len(images)
 
+
 	for i in range(length):
 
 		img = images[i]
@@ -161,12 +149,34 @@ def exporter(id, config):
 
 			run_process(cmd)
 
-			# WEBP only if png enabled
-			if 'webp' in EXTENSIONS:
 
-				webp_out_name = OUTPUT_DIR + '/' + "%s.webp" % i
+		# WEBP only if png enabled
+		if 'webp' in EXTENSIONS:
 
-				cmd = "../lib/cwebp %s -o %s -quiet" % (out_name, webp_out_name)
+			# Create png for webp conversion
+
+			out_name = OUTPUT_DIR + '/' + "%s.png" % i
+
+			try:
+				with open(out_name):
+					pass
+
+			except IOError:
+
+				cmd  = "convert %s -resize %s%% -depth 6 -quality %s %s" % (img, (IMAGE_SCALE * 100), QUALITY, out_name)
+
+				run_process(cmd)
+
+			webp_out_name = OUTPUT_DIR + '/' + "%s.webp" % i
+
+			cmd = "cwebp %s -o %s -quiet" % (out_name, webp_out_name)
+
+			run_process(cmd)
+
+			# Remove tmp png
+			if 'png' not in EXTENSIONS:
+				
+				cmd = "rm %s" % out_name
 
 				run_process(cmd)
 
