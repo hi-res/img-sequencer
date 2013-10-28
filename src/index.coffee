@@ -81,14 +81,14 @@ class Sequencer.Player extends Pivot
 
 		for frame in [0..total_frames]
 
+			# Use first extension as default
+			file_ext = @data.extensions[0]
+
 			# Use webp if chrome and webp is supported
 			if @chrome
 				for ext in @data.extensions
 					file_ext = ext if ext is 'webp'
-			else
-				# Use first extension
-				file_ext = @data.extensions[0]
-
+				
 			path = @path + '/' + frame + '.' + file_ext
 
 			loader = new Sequencer.ImageLoader(path, frame)
