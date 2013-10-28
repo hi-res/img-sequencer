@@ -1,56 +1,58 @@
 {
-	"hd":{
-		"source"      : "img/src",
-		"output"      : "img/output/hd",
-		"format"      : "jpg", 
-		"quality"     : 70,
-		"image_scale" : 1.0,
-		"tile_scale"  : 1.0,
-		"formats"     : [
-			"jpg",
-			"png",
-			"webp"
-		],
-		"keyframes" : {
-			"start"  : 0,
-			"middle" : 60,
-			"end"    : 119
+	"sequences": [
+		{
+			"source"      : "img/src",
+			"output"      : "img/output/hd",
+			"format"      : "jpg", 
+			"quality"     : 70,
+			"image_scale" : 1.0,
+			"tile_scale"  : 1.0,
+			"formats"     : [
+				"jpg",
+				"png",
+				"webp"
+			],
+			"keyframes" : {
+				"start"  : 0,
+				"middle" : 60,
+				"end"    : 119
+			}
+		},
+		{
+			"source"      : "img/src",
+			"output"      : "img/output/sd",
+			"format"      : "jpg", 
+			"quality"     : 70,
+			"image_scale" : 0.5,
+			"tile_scale"  : 1.0,
+			"formats"     : [
+				"jpg",
+				"png",
+				"webp"
+			],
+			"keyframes" : {
+				"start"  : 0,
+				"middle" : 60,
+				"end"    : 119
+			}
+		},
+		{
+			"source"      : "img/src",
+			"output"      : "img/output/xs",
+			"format"      : "jpg", 
+			"quality"     : 70,
+			"image_scale" : 0.25,
+			"tile_scale"  : 1.0,
+			"formats"     : [
+				"jpg",
+				"png",
+				"webp"
+			],
+			"keyframes" : {
+				"start"  : 0,
+				"middle" : 60,
+				"end"    : 119
+			}
 		}
-	},
-	"sd":{
-		"source"      : "img/src",
-		"output"      : "img/output/sd",
-		"format"      : "jpg", 
-		"quality"     : 70,
-		"image_scale" : 0.5,
-		"tile_scale"  : 1.0,
-		"formats"     : [
-			"jpg",
-			"png",
-			"webp"
-		],
-		"keyframes" : {
-			"start"  : 0,
-			"middle" : 60,
-			"end"    : 119
-		}
-	},
-	"xs":{
-		"source"      : "img/src",
-		"output"      : "img/output/xs",
-		"format"      : "jpg", 
-		"quality"     : 70,
-		"image_scale" : 0.25,
-		"tile_scale"  : 1.0,
-		"formats"     : [
-			"jpg",
-			"png",
-			"webp"
-		],
-		"keyframes" : {
-			"start"  : 0,
-			"middle" : 60,
-			"end"    : 119
-		}
-	}
+	]
 }

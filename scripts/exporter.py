@@ -5,25 +5,23 @@ import math
 import os
 import sys
 import subprocess
+import time
 from optparse import OptionParser
 
 
 """
-Dependencies:
-	
-	ImageMagick:
-	
+	Dependencies:
+
 	brew install ImageMagick
 
 	Python Image Library:
 
-	`
 	curl -O -L http://effbot.org/downloads/Imaging-1.1.7.tar.gz
 	tar -xzf Imaging-1.1.7.tar.gz
 	cd Imaging-1.1.7
 	python setup.py build
 	python setup.py install
-	`
+
 """
 
 parser = OptionParser()
@@ -42,6 +40,8 @@ if CONFIGS is None:
 	sys.exit('Json config is required to generate spritesheet')
 
 
+#print json.dumps(CONFIGS, sort_keys=True, indent=4)
+
 
 """
 	Run a sub process
@@ -55,17 +55,18 @@ def run_process(cmd):
 
 
 """
-	Generates the image sequences and json from the config
+	Generates the spritesheets and json for the specific platform
 
 	Parameters:
 		id      -- (string)
 		config  -- (object)
 """
 
-def exporter(id, config):
+def exporter(config):
 
 	# Extract settings from the config
 	SOURCE_DIR  = config['source']
+	TMP_DIR     = SOURCE_DIR + '/../_%s' % str(time.time()).split('.')[0]
 	OUTPUT_DIR  = config['output']
 	FORMAT      = config['format']
 	QUALITY     = config['quality']
@@ -77,44 +78,50 @@ def exporter(id, config):
 	#print SOURCE_DIR, OUTPUT_DIR, IMAGE_SCALE, TILE_SCALE, EXTENSIONS
 
 	print '-----------------------------------------------'
-	print "Exporting:: [%s] \n" % id
+	print "Exporting:: [%s] \n" % SOURCE_DIR
 
 	# Store all source images in this list
 	images = [ ]
 
-	# Create the output directory if it doesn't already exist
+	# Create directories if it doesn't already exist
 	if not os.path.exists(OUTPUT_DIR): os.makedirs(OUTPUT_DIR)
+	if not os.path.exists(TMP_DIR): os.makedirs(TMP_DIR)
+
+	cmd = "cp -R ./%s/ %s" % (SOURCE_DIR, TMP_DIR)
+
+	run_process(cmd)
 
 	# Get list of files in source directory
-	files  = os.listdir(SOURCE_DIR)
-	
-	length  = len(files)
-	renamed = False
+	files      = os.listdir(TMP_DIR)
+	length     = len(files)
+	num_images = 0
 
-	# Check source files name, rename if needed
 	for i in range(length):
-
 		file = files[i]
-
 		if file.endswith(FORMAT):
-			
-			name = file.split('.')
+			num_images += 1
 
-			# Don't rename if images are already renamed
-			if name[0] == '0':
-				renamed = True
+	renamed = False
+	for i in range(num_images):
+		name = file.split('.')
 
-			name[0]  = "%s" % i
-			new_name = '.'.join(name)
+		name[0]  = "%s" % i
 
-			file_in  = SOURCE_DIR + '/' + file
-			file_out = SOURCE_DIR + '/' + new_name
+		new_name = '.'.join(name)
 
-			if renamed is False:
-				os.rename(file_in, file_out)
+		file_in  = TMP_DIR + '/' + file
+		file_out = TMP_DIR + '/' + new_name
 
-			images.append(file_out)
+		images.append(file_out)
 
+	# Make sure the src and output dir are writeable
+	cmd = "chmod -R 777 %s" % TMP_DIR
+
+	run_process(cmd)
+
+	cmd = "chmod -R 777 %s" % OUTPUT_DIR
+
+	run_process(cmd)
 
 	# Frame data for json
 	images_data = []
@@ -125,6 +132,7 @@ def exporter(id, config):
 	# Scale and save new images
 	length = len(images)
 
+	# print images
 
 	for i in range(length):
 
@@ -169,37 +177,30 @@ def exporter(id, config):
 
 			webp_out_name = OUTPUT_DIR + '/' + "%s.webp" % i
 
-			cmd = "cwebp %s -o %s -quiet" % (out_name, webp_out_name)
+			cmd = "./cwebp %s -o %s -quiet" % (out_name, webp_out_name)
 
 			run_process(cmd)
 
 			# Remove tmp png
 			if 'png' not in EXTENSIONS:
-				
-				cmd = "rm %s" % out_name
-
-				run_process(cmd)
-
+				try:
+					cmd = "rm %s" % out_name
+					run_process(cmd)
+				except IOError:
+					pass
 
 		progress += 1
 		
-		print "Progress %s out of %s" % (progress, length)
+		print "[%s] --> [%s] Progress %s out of %s" % (TMP_DIR, OUTPUT_DIR, progress, length)
 
-
-	# Get the largest frame size for the spritesheet calculations
+	# Get the image size
 	frame_size = [0, 0]
 
-	for file in images:
+	img  = Image.open(images[0])
+	size = img.size # (width, height)
 
-		img  = Image.open(file)
-		size = img.size # (width, height)
-
-		if size[0] > frame_size[0] : frame_size[0] = size[0]
-		if size[1] > frame_size[1] : frame_size[1] = size[1]
-
-	# Scale the frame size
-	frame_size[0] *= IMAGE_SCALE
-	frame_size[1] *= IMAGE_SCALE
+	frame_size[0] = size[0] * IMAGE_SCALE
+	frame_size[1] = size[1] * IMAGE_SCALE
 
 	# Create keyframes
 	keyframes = dict()
@@ -209,7 +210,7 @@ def exporter(id, config):
 	
 	print "Saving json..."
 
-	data = dict(total_frames = length,
+	data = dict(total_frames = num_images,
 				extensions   = EXTENSIONS,
 				keyframes    = keyframes,
 				frame        = { "width"  : round(frame_size[0]),
@@ -221,9 +222,15 @@ def exporter(id, config):
 	with open(OUTPUT_DIR + '/' + JSON_OUT, 'w') as outfile:
 		json.dump(data, outfile)
 
+
+	# Remove tmp dir
+	cmd = "rm -rf %s" % TMP_DIR
+
+	run_process(cmd)
+
 	print "Saving complete"
 
 
 # Run the exporter
-for config in CONFIGS:
-	exporter(config, CONFIGS[config])
+for config in CONFIGS['sequences']:
+	exporter(config)
