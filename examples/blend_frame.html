@@ -14,7 +14,6 @@
 	<script src="../node_modules/the-pivot/lib/index.js"></script>	
 
 	<script src="../lib/index.js"></script>
-	<script src="../lib/blender.js"></script>
 
 	<style type="text/css">
 
@@ -40,7 +39,7 @@
 
 			window.addEventListener('mousemove', function(event){
 
-				var frame = (event.pageY / window.innerHeight) * player.get_total_frames();
+				var frame = (event.pageX / window.innerWidth) * player.get_total_frames();
 
 				mode.set_frame(frame);
 				player.tick()
