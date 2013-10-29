@@ -1,0 +1,57 @@
+<html>
+<head>
+	<title>Sequencer test</title>
+
+</head>
+<body>
+
+	<div id="container"></div>
+
+	<script src="./vendors/modernizr.custom.78569.js"></script>
+	<script src="./vendors/jquery-2.0.3.min.js"></script>
+
+	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
+	<script src="../node_modules/the-pivot/lib/index.js"></script>	
+
+	<script src="../lib/index.js"></script>
+	<script src="../lib/blender.js"></script>
+
+	<style type="text/css">
+
+		body{
+			background-color : black;
+		}
+
+	</style>
+
+	<script>
+
+
+		var player = new Sequencer.Blender('container');
+
+		if(Modernizr.backgroundsize)
+			player.cssbackgroundsize = true
+
+		player.on('setup_complete', function(){
+				
+			mode = new Sequencer.FrameMode(player.data)
+
+			player.set_mode(mode);	
+
+			window.addEventListener('mousemove', function(event){
+
+				var frame = (event.pageY / window.innerHeight) * player.get_total_frames();
+
+				mode.set_frame(frame);
+				player.tick()
+			});
+
+		});
+
+		player.load('../test/img2/output/sd', 'frames.json');
+		// player.load('../test/img/output/sd', 'frames.json');
+
+	</script>
+
+</body>
+</html>
