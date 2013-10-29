@@ -26,6 +26,7 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option('-c', '--config', dest = 'config', help = 'The spritesheet config')
+parser.add_option('--cwebppath', dest = 'cwebppath', help = 'The path to the cwebp')
 
 (options, args) = parser.parse_args()
 
@@ -96,23 +97,29 @@ def exporter(config):
 	length     = len(files)
 	num_images = 0
 
+	tmp = []
+	indices = []
 	for i in range(length):
 		file = files[i]
 		if file.endswith(FORMAT):
 			num_images += 1
+			tmp.append(file)
+			indices.append(int(files[i].split('.')[0]))
 
-	renamed = False
+	files = tmp
+
+	indices.sort()
+
+	# Rename images
 	for i in range(num_images):
-		name = file.split('.')
 
-		name[0]  = "%s" % i
+		file_in  = os.getcwd() + '/' + TMP_DIR + '/%s.%s' % (indices[i], FORMAT)
+		file_out = os.getcwd() + '/' + TMP_DIR + '/%s.%s' % (i, FORMAT)
 
-		new_name = '.'.join(name)
-
-		file_in  = TMP_DIR + '/' + file
-		file_out = TMP_DIR + '/' + new_name
+		os.rename(file_in, file_out)
 
 		images.append(file_out)
+
 
 	# Make sure the src and output dir are writeable
 	cmd = "chmod -R 777 %s" % TMP_DIR
@@ -177,7 +184,8 @@ def exporter(config):
 
 			webp_out_name = OUTPUT_DIR + '/' + "%s.webp" % i
 
-			cmd = "./cwebp %s -o %s -quiet" % (out_name, webp_out_name)
+			# cmd = "./cwebp %s -o %s -quiet" % (out_name, webp_out_name)
+			cmd = "%scwebp %s -o %s -quiet" % (options.cwebppath, out_name, webp_out_name)
 
 			run_process(cmd)
 
@@ -224,8 +232,7 @@ def exporter(config):
 
 
 	# Remove tmp dir
-	cmd = "rm -rf %s" % TMP_DIR
-
+	cmd = "rm -R %s" % TMP_DIR
 	run_process(cmd)
 
 	print "Saving complete"
