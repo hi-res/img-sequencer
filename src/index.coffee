@@ -26,7 +26,7 @@ class Sequencer.ImageLoader extends Pivot
 			@trigger 'complete', img
 
 
-class Sequencer.Player extends Pivot
+class Sequencer.AbstractPlayer extends Pivot
 
 	pixel_ratio       : window.devicePixelRatio
 	retina            : window.devicePixelRatio is 2
@@ -141,25 +141,6 @@ class Sequencer.Player extends Pivot
 		@trigger 'setup_complete', @
 
 
-	_update: =>
-
-		# Get the current frame
-		frame = @mode.get_frame()
-
-		if frame isnt @current_frame
-
-			# Hide the last image it it exists
-			if @_frames[@current_frame]?
-
-				@_frames[@current_frame].style.visibility = 'hidden'
-				@_frames[@current_frame].style.zIndex = 0
-
-			@current_frame = frame
-
-			@_frames[@current_frame].style.visibility = 'visible'
-			@_frames[@current_frame].style.zIndex = 1
-	
-
 
 	###
 	Validate the new frame
@@ -203,26 +184,6 @@ class Sequencer.Player extends Pivot
 
 		@_setup()
 
-
-	###
-	Start playback on the current mode
-	###
-	play: => 
-
-		unless @mode?
-			console.warn 'Error --> Set a playback mode first'
-		else
-			#@log 'play'
-			@on 'tick', @tick
-		
-
-	###
-	Stop playback on the current mode
-	###
-	stop: => 
-
-		#@log 'stop'
-		@off 'tick', @tick
 		
 	###
 	Set the playback mode
@@ -273,6 +234,88 @@ class Sequencer.Player extends Pivot
 		@stop()
 
 		@el.innerHTML = ''
+
+
+class Sequencer.Player extends Sequencer.AbstractPlayer
+
+	_update: =>
+
+		# Get the current frame
+		frame = @mode.get_frame()
+
+		if frame isnt @current_frame
+
+			# Hide the last image it it exists
+			if @_frames[@current_frame]?
+
+				@_frames[@current_frame].style.visibility = 'hidden'
+				@_frames[@current_frame].style.zIndex = 0
+
+			@current_frame = frame
+
+			@_frames[@current_frame].style.visibility = 'visible'
+			@_frames[@current_frame].style.zIndex = 1
+
+
+	###
+	Start playback on the current mode
+	###
+	play: => 
+
+		unless @mode?
+			console.warn 'Error --> Set a playback mode first'
+		else
+			#@log 'play'
+			@on 'tick', @tick
+		
+
+	###
+	Stop playback on the current mode
+	###
+	stop: => 
+
+		#@log 'stop'
+		@off 'tick', @tick
+
+
+
+class Sequencer.Blender extends Sequencer.AbstractPlayer
+
+	_update: =>
+
+		# Get the current frame
+		frame   = @mode.get_frame()
+
+		# Get the percent
+		percent = frame / @get_total_frames()
+		percent = Number percent.toFixed(2)
+
+		# Loop through all the frames and calculate the interpolated opacity
+		for i in [0..@get_total_frames()]
+
+			# Calculate current frame position within the overall percentage
+			position = i * (1 / @get_total_frames())
+
+			# Calculate distance from image position
+			dx = percent - position
+			distance = Math.sqrt dx * dx
+
+			# Update opacity
+			if distance <= 0.1
+
+				normalise = distance * 10
+
+				# Inverse
+				opacity = 1 - normalise
+
+				@_frames[i].style.visibility = 'visible'
+				@_frames[i].style.zIndex  = 1
+				@_frames[i].style.opacity = opacity
+			else
+				@_frames[i].style.visibility = 'hidden'
+				@_frames[i].style.zIndex  = 0
+				@_frames[i].style.opacity = 0
+
 
 
 
