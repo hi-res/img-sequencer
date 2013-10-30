@@ -45,10 +45,6 @@ class Sequencer.AbstractPlayer extends Pivot
 
 		@el = document.getElementById el
 
-		@container = document.createElement 'div'
-		@container.style.position = 'absolute'
-		@el.appendChild @container
-
 		(animloop = =>
 			window.requestAnimFrame animloop
 			@trigger 'tick'
@@ -98,6 +94,10 @@ class Sequencer.AbstractPlayer extends Pivot
 	Setup the container
 	###
 	_setup: =>
+
+		@container = document.createElement 'div'
+		@container.style.position = 'absolute'
+		@el.appendChild @container
 
 		scale  = (if @retina is true then 0.5 else 1)
 
@@ -230,9 +230,6 @@ class Sequencer.AbstractPlayer extends Pivot
 	get_total_frames: -> @data.total_frames - 1
 
 	destroy: ->
-
-		@stop()
-
 		@el.innerHTML = ''
 
 
@@ -276,6 +273,11 @@ class Sequencer.Player extends Sequencer.AbstractPlayer
 
 		#@log 'stop'
 		@off 'tick', @tick
+
+
+	destroy: =>
+		@stop()
+		super()
 
 
 
