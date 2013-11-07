@@ -1,1 +1,1 @@
-python ../scripts/exporter.py --config config.json
+python ../scripts/exporter.py --config config.json --cwebppath ./

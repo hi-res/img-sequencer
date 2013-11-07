@@ -8,24 +8,9 @@ import subprocess
 import time
 from optparse import OptionParser
 
-
-"""
-	Dependencies:
-
-	brew install ImageMagick
-
-	Python Image Library:
-
-	curl -O -L http://effbot.org/downloads/Imaging-1.1.7.tar.gz
-	tar -xzf Imaging-1.1.7.tar.gz
-	cd Imaging-1.1.7
-	python setup.py build
-	python setup.py install
-
-"""
-
 parser = OptionParser()
 parser.add_option('-c', '--config', dest = 'config', help = 'The spritesheet config')
+parser.add_option('--cwebppath', dest = 'cwebppath', help = 'The path to the cwebp')
 
 (options, args) = parser.parse_args()
 
@@ -40,34 +25,14 @@ if CONFIGS is None:
 	sys.exit('Json config is required to generate spritesheet')
 
 
-#print json.dumps(CONFIGS, sort_keys=True, indent=4)
-
-
-"""
-	Run a sub process
-
-	Parameters:
-		cmd -- (String)
-"""
-
 def run_process(cmd):
 	subprocess.call(cmd.split(' '), shell = False)
 
+def exporter(sequence, config):
 
-"""
-	Generates the spritesheets and json for the specific platform
-
-	Parameters:
-		id      -- (string)
-		config  -- (object)
-"""
-
-def exporter(config):
-
-	# Extract settings from the config
-	SOURCE_DIR  = config['source']
-	TMP_DIR     = SOURCE_DIR + '/../_%s' % str(time.time()).split('.')[0]
-	OUTPUT_DIR  = config['output']
+	SOURCE_DIR  = sequence + os.sep + config['source_path']
+	TMP_DIR     = sequence + os.sep + ('%s' % str(time.time()).split('.')[0])
+	OUTPUT_DIR  = sequence + os.sep + config['output_path'] + os.sep + config['output_dir']
 	FORMAT      = config['format']
 	QUALITY     = config['quality']
 	IMAGE_SCALE = config['image_scale']
@@ -83,12 +48,19 @@ def exporter(config):
 	# Store all source images in this list
 	images = [ ]
 
-	# Create directories if it doesn't already exist
-	if not os.path.exists(OUTPUT_DIR): os.makedirs(OUTPUT_DIR)
+	# Clear the output directory and remake
+	if os.path.exists(OUTPUT_DIR): 
+
+		cmd = "rm -rf %s" % OUTPUT_DIR
+		run_process(cmd) 
+
+		os.makedirs(OUTPUT_DIR)
+	
 	if not os.path.exists(TMP_DIR): os.makedirs(TMP_DIR)
+	if not os.path.exists(OUTPUT_DIR): os.makedirs(OUTPUT_DIR)
 
-	cmd = "cp -R ./%s/ %s" % (SOURCE_DIR, TMP_DIR)
-
+	# Copy the source images 
+	cmd = "cp -R %s%s %s" % (SOURCE_DIR, os.sep, TMP_DIR)
 	run_process(cmd)
 
 	# Get list of files in source directory
@@ -96,31 +68,31 @@ def exporter(config):
 	length     = len(files)
 	num_images = 0
 
+	tmp = []
 	for i in range(length):
 		file = files[i]
 		if file.endswith(FORMAT):
 			num_images += 1
+			tmp.append(file)
 
-	renamed = False
+	files = tmp
+
+	# Rename images
 	for i in range(num_images):
-		name = file.split('.')
 
-		name[0]  = "%s" % i
+		file_in  = os.getcwd() + os.sep + TMP_DIR + os.sep + '%s' % files[i]
+		file_out = os.getcwd() + os.sep + TMP_DIR + os.sep + '%s.%s' % (i, FORMAT)
 
-		new_name = '.'.join(name)
-
-		file_in  = TMP_DIR + '/' + file
-		file_out = TMP_DIR + '/' + new_name
+		# print file_in, file_out
+		os.rename(file_in, file_out)
 
 		images.append(file_out)
 
+
 	# Make sure the src and output dir are writeable
 	cmd = "chmod -R 777 %s" % TMP_DIR
-
 	run_process(cmd)
-
 	cmd = "chmod -R 777 %s" % OUTPUT_DIR
-
 	run_process(cmd)
 
 	# Frame data for json
@@ -141,7 +113,7 @@ def exporter(config):
 		# JPG
 		if 'jpg' in EXTENSIONS:
 
-			out_name = OUTPUT_DIR + '/' + "%s.jpg" % i
+			out_name = OUTPUT_DIR + os.sep + "%s.jpg" % i
 
 			cmd  = "convert %s -resize %s%% -depth 6 -quality %s %s" % (img, (IMAGE_SCALE * 100), QUALITY, out_name)
 
@@ -151,7 +123,7 @@ def exporter(config):
 		# PNG
 		if 'png' in EXTENSIONS:
 
-			out_name = OUTPUT_DIR + '/' + "%s.png" % i
+			out_name = OUTPUT_DIR + os.sep + "%s.png" % i
 
 			cmd  = "convert %s -resize %s%% -depth 6 -quality %s %s" % (img, (IMAGE_SCALE * 100), QUALITY, out_name)
 
@@ -163,7 +135,7 @@ def exporter(config):
 
 			# Create png for webp conversion
 
-			out_name = OUTPUT_DIR + '/' + "%s.png" % i
+			out_name = OUTPUT_DIR + os.sep + "%s.png" % i
 
 			try:
 				with open(out_name):
@@ -175,9 +147,9 @@ def exporter(config):
 
 				run_process(cmd)
 
-			webp_out_name = OUTPUT_DIR + '/' + "%s.webp" % i
+			webp_out_name = OUTPUT_DIR + os.sep + "%s.webp" % i
 
-			cmd = "./cwebp %s -o %s -quiet" % (out_name, webp_out_name)
+			cmd = "%scwebp %s -o %s -quiet" % (options.cwebppath, out_name, webp_out_name)
 
 			run_process(cmd)
 
@@ -219,18 +191,18 @@ def exporter(config):
 							   }
 				)
 
-	with open(OUTPUT_DIR + '/' + JSON_OUT, 'w') as outfile:
+	with open(OUTPUT_DIR + os.sep + JSON_OUT, 'w') as outfile:
 		json.dump(data, outfile)
 
 
 	# Remove tmp dir
 	cmd = "rm -rf %s" % TMP_DIR
-
 	run_process(cmd)
 
 	print "Saving complete"
 
 
 # Run the exporter
-for config in CONFIGS['sequences']:
-	exporter(config)
+for config in CONFIGS['export_sequences']:
+	for sequence in config['sequences']:
+		exporter(sequence, config)

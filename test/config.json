@@ -1,57 +1,57 @@
 {
-	"sequences": [
+	"export_sequences": [
 		{
-			"source"      : "img/src",
-			"output"      : "img/output/hd",
-			"format"      : "jpg", 
-			"quality"     : 70,
-			"image_scale" : 1.0,
-			"tile_scale"  : 1.0,
-			"formats"     : [
+			"sequences"    : ["img"],
+			"source_path"  : "src",
+			"output_path"  : "output",
+			"output_dir"   : "hd",
+			"format"       : "jpg", 
+			"quality"      : 70,
+			"image_scale"  : 1.0,
+			"tile_scale"   : 1.0,
+			"formats"      : [
 				"jpg",
 				"png",
 				"webp"
 			],
 			"keyframes" : {
-				"start"  : 0,
-				"middle" : 60,
-				"end"    : 119
+				"start"  : 0
 			}
 		},
 		{
-			"source"      : "img/src",
-			"output"      : "img/output/sd",
-			"format"      : "jpg", 
-			"quality"     : 70,
-			"image_scale" : 0.5,
-			"tile_scale"  : 1.0,
-			"formats"     : [
+			"sequences"    : ["img"],
+			"source_path"  : "src",
+			"output_path"  : "output",
+			"output_dir"   : "sd",
+			"format"       : "jpg", 
+			"quality"      : 70,
+			"image_scale"  : 0.5,
+			"tile_scale"   : 1.0,
+			"formats"      : [
 				"jpg",
 				"png",
 				"webp"
 			],
 			"keyframes" : {
-				"start"  : 0,
-				"middle" : 60,
-				"end"    : 119
+				"start"  : 0
 			}
 		},
 		{
-			"source"      : "img/src",
-			"output"      : "img/output/xs",
-			"format"      : "jpg", 
-			"quality"     : 70,
-			"image_scale" : 0.25,
-			"tile_scale"  : 1.0,
-			"formats"     : [
+			"sequences"    : ["img"],
+			"source_path"  : "src",
+			"output_path"  : "output",
+			"output_dir"   : "xs",
+			"format"       : "jpg", 
+			"quality"      : 70,
+			"image_scale"  : 0.25,
+			"tile_scale"   : 1.0,
+			"formats"      : [
 				"jpg",
 				"png",
 				"webp"
 			],
 			"keyframes" : {
-				"start"  : 0,
-				"middle" : 60,
-				"end"    : 119
+				"start"  : 0
 			}
 		}
 	]
