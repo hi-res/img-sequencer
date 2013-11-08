@@ -28,8 +28,6 @@ class Sequencer.ImageLoader extends Pivot
 
 class Sequencer.Player extends Pivot
 
-	pixel_ratio       : window.devicePixelRatio
-	retina            : window.devicePixelRatio is 2
 	chrome 		      : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
 	el                : null
 	current_frame     : true
@@ -99,11 +97,9 @@ class Sequencer.Player extends Pivot
 	###
 	_setup: =>
 
-		scale  = (if @retina is true then 0.5 else 1)
-
 		# Scale for retina
-		width  = @data.frame.width  * scale
-		height = @data.frame.height * scale
+		width  = @data.frame.width  * @data.frame.scale
+		height = @data.frame.height * @data.frame.scale
 
 		@_frames = []
 

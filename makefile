@@ -2,7 +2,7 @@ CS=node_modules/coffee-script/bin/coffee
 MOCHA=node_modules/mocha/bin/mocha
 
 MVERSION=node_modules/mversion/bin/version
-VERSION=0.0.3
+VERSION=0.0.4
 
 setup:
 

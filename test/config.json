@@ -8,7 +8,7 @@
 			"format"       : "jpg", 
 			"quality"      : 70,
 			"image_scale"  : 1.0,
-			"tile_scale"   : 1.0,
+			"tile_scale"   : 0.5,
 			"formats"      : [
 				"jpg",
 				"png",
