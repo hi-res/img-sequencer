@@ -1,6 +1,6 @@
 {
   "name": "img-sequencer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "An image sequence utility for the browser.",
   "main": "lib/index.js",
   "scripts": {

@@ -189,14 +189,7 @@ class Sequencer.Player extends Pivot
 				#@log error
 
 
-	noload: (@data, frames) ->
-
-		#@data = data.
-		@_cache = []
-
-		for img, i in frames.images
-			@_cache[i] = img.tag
-
+	noload: (@data, @_cache) ->
 		@_setup()
 
 
