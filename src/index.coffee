@@ -23,15 +23,15 @@ class Sequencer.ImageLoader extends Pivot
 
 class Sequencer.Player extends Pivot
 
-	chrome 		      : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
-	el                : null
-	current_frame     : true
-	mode 			  : null
-	cssbackgroundsize : false
-	dev 			  : true
-	tag_type          : 'div' # div or img
-	@id_animloop  	  : null
-	counter : 0
+	chrome 		      	: (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
+	el                	: null
+	current_frame     	: true
+	mode 			  	: null
+	cssbackgroundsize 	: false
+	dev 			  	: true
+	tag_type          	: 'div' # div or img
+	counter  			: 0
+	is_playing 			: false
 
 	log: (args...) =>
 		console.log(args...) if @dev
@@ -43,8 +43,6 @@ class Sequencer.Player extends Pivot
 		@container = document.createElement 'div'
 		@container.style.position = 'absolute'
 		@el.appendChild @container
-
-		bs.ticker.on 'tick', @tick
 		
 
 	###
@@ -191,21 +189,27 @@ class Sequencer.Player extends Pivot
 	Start playback on the current mode
 	###
 	play: => 
+		return if @is_playing
+
 		@date = new Date()
 		unless @mode?
 			console.warn 'Error --> Set a playback mode first'
 		else
 			@log 'play at speed', @mode.speed
-			@on 'tick', @tick
+			bs.ticker.on 'tick', @tick
+			@is_playing = true
 		
 
 	###
 	Stop playback on the current mode
 	###
 	stop: => 
+		return unless @is_playing
+		
 		@log( "stop--->", (new Date - @date) / 1000 )
 		#@log 'stop'
 		bs.ticker.off 'tick', @tick
+		@is_playing = false
 		
 	###
 	Set the playback mode
