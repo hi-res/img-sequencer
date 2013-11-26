@@ -47,7 +47,7 @@ class Sequencer.LinearMode extends Pivot
 	total_frames: -> @data.total_frames - 1
 
 	_update: => 
-		@trigger 'update', @get_frame()
+		@trigger 'update'
 
 	_complete: => 
 		@trigger 'complete'

@@ -163,7 +163,7 @@ class Sequencer.Player extends Pivot
 
 	noload: (@data, @_cache) ->
 		@_setup()
-		
+
 		
 	###
 	Set the playback mode
@@ -192,7 +192,7 @@ class Sequencer.Player extends Pivot
 		Sequencer.util.resize $frames, @data.frame.width, @data.frame.height, @width, @height, @cssbackgroundsize
 
 
-	update: (frame) => 
+	update: => 
 		return unless @mode?
 		@_update()
 

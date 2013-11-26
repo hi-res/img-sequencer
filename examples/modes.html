@@ -62,7 +62,7 @@
 				mode.on('complete', complete);
 		
 				player.set_mode( mode );
-				mode.play(4)
+				mode.play(1)
 			}
 
 			player.on('setup_complete', setup_complete);
@@ -96,7 +96,7 @@
 				mode.on('complete', complete);
 		
 				player.set_mode( mode );
-				mode.play(4)
+				mode.play(2, Quad.easeInOut)
 			}
 
 			player.on('setup_complete', setup_complete);
@@ -106,8 +106,8 @@
 	</script>
 
 
-	<a id="add" class="button" href="javascript:add()">ADD</a>
-	<a id="add2" class="button" href="javascript:add2()">ADD 2</a>
+	<a id="add" class="button" href="javascript:add()">Play default</a>
+	<a id="add2" class="button" href="javascript:add2()">Play with easing</a>
 
 	<div id="container"></div>
 </body>
