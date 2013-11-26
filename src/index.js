@@ -241,7 +241,7 @@ Sequencer.Player = (function(_super) {
 
   Player.prototype.stop = function() {
     this.log("stop--->", (new Date - this.date) / 1000);
-    return this.off('tick', this.tick);
+    return bs.ticker.off('tick', this.tick);
   };
 
   /*
@@ -293,8 +293,8 @@ Sequencer.Player = (function(_super) {
   };
 
   Player.prototype.destroy = function() {
-    this.el.innerHTML = '';
-    return bs.ticker.off('tick', this.tick);
+    this.stop();
+    return this.el.innerHTML = '';
   };
 
   return Player;

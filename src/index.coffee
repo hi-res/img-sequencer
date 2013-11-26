@@ -2,11 +2,6 @@
 if exports? and module and module.exports
 	Pivot = require 'the-pivot' 
 
-window?.requestAnimFrame = (->
-	window.requestAnimationFrame or window.webkitRequestAnimationFrame or window.mozRequestAnimationFrame or (callback) ->
-		window.setTimeout callback, 1000 / 60
-)()
-
 Sequencer = Sequencer or {}
 
 class Sequencer.ImageLoader extends Pivot
@@ -28,8 +23,6 @@ class Sequencer.ImageLoader extends Pivot
 
 class Sequencer.Player extends Pivot
 
-	pixel_ratio       : window.devicePixelRatio
-	retina            : window.devicePixelRatio is 2
 	chrome 		      : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
 	el                : null
 	current_frame     : true
@@ -37,6 +30,8 @@ class Sequencer.Player extends Pivot
 	cssbackgroundsize : false
 	dev 			  : true
 	tag_type          : 'div' # div or img
+	@id_animloop  	  : null
+	counter : 0
 
 	log: (args...) =>
 		console.log(args...) if @dev
@@ -49,10 +44,7 @@ class Sequencer.Player extends Pivot
 		@container.style.position = 'absolute'
 		@el.appendChild @container
 
-		(animloop = =>
-			window.requestAnimFrame animloop
-			@trigger 'tick'
-		)()
+		bs.ticker.on 'tick', @tick
 		
 
 	###
@@ -99,11 +91,9 @@ class Sequencer.Player extends Pivot
 	###
 	_setup: =>
 
-		scale  = (if @retina is true then 0.5 else 1)
-
 		# Scale for retina
-		width  = @data.frame.width  * scale
-		height = @data.frame.height * scale
+		width  = @data.frame.width  * @data.frame.scale
+		height = @data.frame.height * @data.frame.scale
 
 		@_frames = []
 
@@ -193,14 +183,7 @@ class Sequencer.Player extends Pivot
 				#@log error
 
 
-	noload: (@data, frames) ->
-
-		#@data = data.
-		@_cache = []
-
-		for img, i in frames.images
-			@_cache[i] = img.tag
-
+	noload: (@data, @_cache) ->
 		@_setup()
 
 
@@ -208,11 +191,11 @@ class Sequencer.Player extends Pivot
 	Start playback on the current mode
 	###
 	play: => 
-
+		@date = new Date()
 		unless @mode?
 			console.warn 'Error --> Set a playback mode first'
 		else
-			#@log 'play'
+			@log 'play at speed', @mode.speed
 			@on 'tick', @tick
 		
 
@@ -220,9 +203,9 @@ class Sequencer.Player extends Pivot
 	Stop playback on the current mode
 	###
 	stop: => 
-
+		@log( "stop--->", (new Date - @date) / 1000 )
 		#@log 'stop'
-		@off 'tick', @tick
+		bs.ticker.off 'tick', @tick
 		
 	###
 	Set the playback mode
@@ -257,9 +240,11 @@ class Sequencer.Player extends Pivot
 
 
 	tick: => 
+		return unless @mode?
 		@mode.update()
 		@_validate_frame()
 		@_update()
+		@counter++
 
 
 	###
@@ -269,10 +254,11 @@ class Sequencer.Player extends Pivot
 	get_total_frames: -> @data.total_frames - 1
 
 	destroy: ->
-
 		@stop()
-
+		
 		@el.innerHTML = ''
+
+		
 
 
 
