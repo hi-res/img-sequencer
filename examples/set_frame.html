@@ -31,10 +31,10 @@
 
 			window.addEventListener('mousemove', function(event){
 
-				var frame = Math.floor((event.pageX / window.innerWidth) * player.get_total_frames());
+				var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
 
 				mode.set_frame(frame);
-				player.tick()
+				player.update(mode.get_frame());
 			});
 
 		});

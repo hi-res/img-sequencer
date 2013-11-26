@@ -5,14 +5,16 @@
 </head>
 <body>
 
-	<script src="../../vendors/modernizr.custom.78569.js"></script>
-	<script src="../../vendors/jquery-2.0.3.min.js"></script>
+	<script src="vendors/modernizr.custom.78569.js"></script>
+	<script src="vendors/jquery-2.0.3.min.js"></script>
+	<script src="vendors/EasePack.min.js"></script>
+	<script src="vendors/TweenLite.min.js"></script>
 
-	<script src="../../../node_modules/the-pivot/lib/pivot_item.js"></script>	
-	<script src="../../../node_modules/the-pivot/lib/index.js"></script>	
+	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
+	<script src="../node_modules/the-pivot/lib/index.js"></script>
 
 	<script src="../lib/index.js"></script>
-	<script src="../../../dist/bootstrap.js"></script>
+
 	<style>
 	body {
 		text-align: center;
@@ -32,87 +34,74 @@
 
 	</style>
 	<script>
-		var env = {
-			BASE_PATH : '/noah-bootstrap',
-			LANGUAGE  : 'en',
-			DEEP_LINK : '',
-			IMPRESSUM : ['de-at', 'de', 'de-li', 'de-lu', 'de-ch'],
-			TEMPLATE_FOLDER : '<?php echo $template_folder; ?>',
-			BROWSER_SUPPORT:{
-				desktop: {
-					'user_agents' : {
-						'Chrome'  : 19,
-						'Firefox' : 10,
-						'Opera'   : 15,
-						'Explorer': 8,
-						'Safari'  : 5.1	
-					}
-				},
-				tablet: {
-					'dimension': {
-						'width': 1024,
-						'height': 600 
-					},
-					'user_agents' : {
-						'Safari'  : 5	
-					}
-				},
-				mobile: {
-					'dimension': {
-						'width': 320,
-						'height': 370 
-					},
-					'user_agents' : {
-						'Chrome'  : 30,
-						'Explorer': 10,
-						'Safari'  : 5.1	
-					}
-				}
-			},
-			DEBUG: true
-		};
-
-		var bs = new Bootstrap(env);
 
 		function add() {
-			var player = new Sequencer.Player('container');
-			var mode;
+			
+			var player, mode, spritesheet;
+
+			player = new Sequencer.Player('container');
+			
 			if(Modernizr.backgroundsize)
 				player.cssbackgroundsize = true
 
-			player.on('setup_complete', function(){
+			function setup_complete(){
+
+				player.off('setup_complete', setup_complete);
+
 				mode = new Sequencer.LinearMode(player.data);
-				mode.speed = 1;
-				mode.on( "complete", function() {
-					console.log( "[COUNTER]", player.counter );
-					player.destroy();
-				});
 
+				function complete(){
+
+					player.off('complete', complete);
+
+					console.log('playback complete');
+
+					// player.destroy()
+				}
+
+				mode.on('complete', complete);
+		
 				player.set_mode( mode );
-				player.play()
-			});
+				mode.play(4)
+			}
 
-			player.load('images/flash_sequence/90', 'frames.json');
+			player.on('setup_complete', setup_complete);
+
+			player.load('../test/img/output/sd', 'frames.json');
 		}
 
 		function add2() {
-			var player = new Sequencer.Player('container');
-			var mode;
+			var player, mode, spritesheet;
+
+			player = new Sequencer.Player('container');
+			
 			if(Modernizr.backgroundsize)
 				player.cssbackgroundsize = true
 
-			player.on('setup_complete', function(){
+			function setup_complete(){
+
+				player.off('setup_complete', setup_complete);
+
 				mode = new Sequencer.LinearMode(player.data);
-				mode.speed = 1;
-				mode.on( "complete", function() {
-					player.destroy();
-				});
 
+				function complete(){
+
+					player.off('complete', complete);
+
+					console.log('playback complete');
+
+					// player.destroy()
+				}
+
+				mode.on('complete', complete);
+		
 				player.set_mode( mode );
-				player.play()
-			});
+				mode.play(4)
+			}
 
-			player.load('images/flash_sequence_2/90', 'frames.json');
+			player.on('setup_complete', setup_complete);
+
+			player.load('../test/img/output/sd', 'frames.json');
 		}
 	</script>
 

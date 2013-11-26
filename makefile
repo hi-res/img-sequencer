@@ -9,10 +9,10 @@ setup:
 	npm install
 
 watch:
-	@$(CS) -bwo lib src
+	@$(CS) -w -b -cj lib/index.js src/*.coffee
 
 build:
-	@$(CS) -bco lib src	
+	@$(CS) -b -cj lib/index.js src/*.coffee
 
 
 bump.minor:

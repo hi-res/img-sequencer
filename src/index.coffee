@@ -30,8 +30,6 @@ class Sequencer.Player extends Pivot
 	cssbackgroundsize : false
 	dev 			  : true
 	tag_type          : 'div' # div or img
-	@id_animloop  	  : null
-	counter : 0
 
 	log: (args...) =>
 		console.log(args...) if @dev
@@ -43,8 +41,6 @@ class Sequencer.Player extends Pivot
 		@container = document.createElement 'div'
 		@container.style.position = 'absolute'
 		@el.appendChild @container
-
-		bs.ticker.on 'tick', @tick
 		
 
 	###
@@ -150,24 +146,6 @@ class Sequencer.Player extends Pivot
 			@_frames[@current_frame].style.zIndex = 1
 	
 
-
-	###
-	Validate the new frame
-	@return [Int]
-	###
-	_validate_frame: ->
-
-		frame = @mode.get_frame()
-
-		if frame < 0
-			@_frame = 0
-			console.warn 'Frame is less than 0'
-			@stop()
-		else if frame > @get_total_frames()
-			@_frame = @get_total_frames()
-			console.warn "Frame is greater than total frames, stopping at #{@get_total_frames()}"
-			@stop()
-
 	###----------------------------------------------
 	@public
 	###
@@ -185,27 +163,7 @@ class Sequencer.Player extends Pivot
 
 	noload: (@data, @_cache) ->
 		@_setup()
-
-
-	###
-	Start playback on the current mode
-	###
-	play: => 
-		@date = new Date()
-		unless @mode?
-			console.warn 'Error --> Set a playback mode first'
-		else
-			@log 'play at speed', @mode.speed
-			@on 'tick', @tick
 		
-
-	###
-	Stop playback on the current mode
-	###
-	stop: => 
-		@log( "stop--->", (new Date - @date) / 1000 )
-		#@log 'stop'
-		bs.ticker.off 'tick', @tick
 		
 	###
 	Set the playback mode
@@ -213,14 +171,12 @@ class Sequencer.Player extends Pivot
 	set_mode: (mode) =>
 		
 		# Unset previous events
-		@mode?.off 'complete', @stop
+		@mode?.off 'update', @update
 		
 		@mode = mode
 
-		#@log 'setting mode -->', @mode.id
-
-		# Add new events
-		@mode.on 'complete', @stop
+		# Subscribe to new mode tick
+		@mode.on 'update', @update
 
 
 	set_size: (@width, @height) =>
@@ -233,18 +189,12 @@ class Sequencer.Player extends Pivot
 
 		$frames = $(@container).find @tag_type
 
-		Utils.resize $frames, @data.frame.width, @data.frame.height, @width, @height, @cssbackgroundsize
+		Sequencer.util.resize $frames, @data.frame.width, @data.frame.height, @width, @height, @cssbackgroundsize
 
 
-	set_frame: (frame) =>
-
-
-	tick: => 
+	update: (frame) => 
 		return unless @mode?
-		@mode.update()
-		@_validate_frame()
 		@_update()
-		@counter++
 
 
 	###
@@ -253,176 +203,8 @@ class Sequencer.Player extends Pivot
 	###
 	get_total_frames: -> @data.total_frames - 1
 
-	destroy: ->
-		@stop()
-		
+	destroy: ->			
 		@el.innerHTML = ''
-
-		
-
-
-
-###----------------------------------------------
-Playback modes
-###
-
-
-###
-Frame mode
-
-Manually set the frame of the sequence
-###
-class Sequencer.FrameMode extends Pivot
-
-	id: 'FrameMode'
-	frame: 0
-
-	constructor: (@data) ->
-
-	update: ->
-
-	set_frame: (@frame) ->
-
-	get_frame: -> @frame
-
-
-###
-Linear mode
-
-Repeats the animation from frame 0 once it reaches the end
-###
-class Sequencer.LinearMode extends Pivot
-
-	id: 'Linear'
-	frame: 0
-	speed: 1
-
-	constructor: (@data) ->
-
-	update: -> @_set_frame()
-
-	_set_frame: ->
-
-		if @frame >= @data.total_frames - 1
-			@trigger 'complete'
-		else
-			@frame += @speed
-
-	get_frame: -> Math.floor @frame
-
-
-###
-RepeatMode
-
-Repeats the animation from frame 0 once it reaches the end
-###
-class Sequencer.RepeatMode extends Pivot
-
-	id: 'Repeat'
-	frame: 0
-	speed: 1
-
-	constructor: (@data) ->
-
-	update: -> @_set_frame()
-
-	_set_frame: ->
-
-		if @frame >= @data.total_frames - 1
-			@frame = 0
-		
-		@frame += @speed
-
-	get_frame: -> Math.floor @frame
-
-
-###
-ReverseMode
-
-Plays the animation back and forth
-###
-class Sequencer.ReverseMode extends Pivot
-
-	id: 'Reverse'
-	frame: 0
-	speed: 1
-
-	constructor: (@data) ->
-
-	update: -> @_set_frame()
-
-	_set_frame: ->
-
-		if @frame >= @data.total_frames - 1
-			@frame = -Math.abs @speed
-
-		if @frame <= 0
-			Math.abs @speed
-		
-		@frame += @speed
-
-	get_frame: -> Math.floor @frame
-
-###----------------------------------------------
-Utils
-###
-
-Utils = 
-
-	calculate_resize: (image_width, image_height, win_width, win_height, backgroundsize) ->
-
-		window_ratio = win_width / win_height
-		image_ratio1 = image_width / image_height
-		image_ratio2 = image_height / image_width
-
-		if window_ratio < image_ratio1
-			# log 'portrait'
-			new_height = win_height
-			new_width  = new_height * image_ratio1
-
-			new_top  = 0
-			new_left = (win_width * .5) - (new_width * .5) 
-
-		else
-			# log 'landscape'
-			new_width  = win_width
-			new_height = new_width * image_ratio2
-
-			new_top  = (win_height * .5) - (new_height * .5)
-			new_left = 0 
-
-		return {
-			x      : new_left
-			y      : new_top
-			width  : new_width
-			height : new_height
-		}
-
-	###
-	Resize image(s) to the browser size retaining aspect ratio
-	@param [jQuery]  $images
-	@param [Number]  image_width
-	@param [Number]  image_height
-	@param [Number]  win_width
-	@param [Number]  win_width
-	@param [Boolean] backgroundsize
-	###
-	resize: ($images, image_width, image_height, win_width, win_height, backgroundsize) ->
-
-		data = @calculate_resize image_width, image_height, win_width, win_height, backgroundsize
-
-		# Background size is a lot fast than scaling and positioning an image
-
-		if backgroundsize
-			$images.css
-				'background-size'     : "#{data.width}px #{data.height}px"
-				'background-position' : "#{data.x}px #{data.y}px"
-		else
-			$images.css
-				'margin-top'  : "#{data.y}px"
-				'margin-left' : "#{data.x}px"
-				'width'       : "#{data.width}px"
-				'height'      : "#{data.height}px"
 
 
 # exporting
