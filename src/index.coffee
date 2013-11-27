@@ -146,6 +146,13 @@ class Sequencer.Player extends Pivot
 			@_frames[@current_frame].style.zIndex = 1
 	
 
+	_resize: =>
+
+		$window = $(window)
+
+		@set_size $window.width(), $window.height()
+
+
 	###----------------------------------------------
 	@public
 	###
@@ -195,6 +202,21 @@ class Sequencer.Player extends Pivot
 	update: => 
 		return unless @mode?
 		@_update()
+
+
+	###
+	Enable the automatic resizing of the sequencer container on window resize
+	###
+	enable_automatic_resize: ->
+		$(window).on 'resize', @_resize
+		@_resize()
+		
+
+	###
+	Disable the automatic resizing of the sequencer container on window resize
+	###
+	disable_automatic_resize: ->
+		$(window).off 'resize', @_resize
 
 
 	###
