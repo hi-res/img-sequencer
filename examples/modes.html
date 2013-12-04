@@ -8,7 +8,7 @@
 	<script src="vendors/modernizr.custom.78569.js"></script>
 	<script src="vendors/jquery-2.0.3.min.js"></script>
 	<script src="vendors/EasePack.min.js"></script>
-	<script src="vendors/TweenLite.min.js"></script>
+	<script src="vendors/TweenMax.min.js"></script>
 
 	<script src="../node_modules/the-pivot/lib/pivot_item.js"></script>	
 	<script src="../node_modules/the-pivot/lib/index.js"></script>
@@ -35,7 +35,7 @@
 	</style>
 	<script>
 
-		function add() {
+		function linear_mode() {
 			
 			var player, mode, spritesheet;
 
@@ -49,44 +49,11 @@
 				player.off('setup_complete', setup_complete);
 
 				mode = new Sequencer.LinearMode(player.data);
+				mode.loop = true
 
 				function complete(){
 
-					player.off('complete', complete);
-
-					console.log('playback complete');
-
-					// player.destroy()
-				}
-
-				mode.on('complete', complete);
-		
-				player.set_mode( mode );
-				mode.play(1)
-			}
-
-			player.on('setup_complete', setup_complete);
-
-			player.load('../test/img/output/sd', 'frames.json');
-		}
-
-		function add2() {
-			var player, mode, spritesheet;
-
-			player = new Sequencer.Player('container');
-			
-			if(Modernizr.backgroundsize)
-				player.cssbackgroundsize = true
-
-			function setup_complete(){
-
-				player.off('setup_complete', setup_complete);
-
-				mode = new Sequencer.LinearMode(player.data);
-
-				function complete(){
-
-					player.off('complete', complete);
+					// player.off('complete', complete);
 
 					console.log('playback complete');
 
@@ -103,11 +70,42 @@
 
 			player.load('../test/img/output/sd', 'frames.json');
 		}
+
+		function repeat_mode() {
+			var player, mode, spritesheet;
+
+			player = new Sequencer.Player('container');
+			
+			if(Modernizr.backgroundsize)
+				player.cssbackgroundsize = true
+
+			function setup_complete(){
+
+				player.off('setup_complete', setup_complete);
+
+				mode = new Sequencer.RepeatMode(player.data);
+
+				function complete(){
+					console.log('repeat playback complete');
+				}
+
+				mode.on('complete', complete);
+		
+				mode.repeat = 5;
+
+				player.set_mode( mode );
+				mode.play(2)
+			}
+
+			player.on('setup_complete', setup_complete);
+
+			player.load('../test/img/output/sd', 'frames.json');
+		}
 	</script>
 
 
-	<a id="add" class="button" href="javascript:add()">Play default</a>
-	<a id="add2" class="button" href="javascript:add2()">Play with easing</a>
+	<a class="button" href="javascript:linear_mode()">Linear mode</a>
+	<a class="button" href="javascript:repeat_mode()">Repeat mode</a>
 
 	<div id="container"></div>
 </body>

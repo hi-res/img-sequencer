@@ -23,12 +23,12 @@ class Sequencer.ImageLoader extends Pivot
 
 class Sequencer.Player extends Pivot
 
-	chrome 		      : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
+	chrome            : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
 	el                : null
 	current_frame     : true
-	mode 			  : null
+	mode              : null
 	cssbackgroundsize : false
-	dev 			  : true
+	dev               : true
 	tag_type          : 'div' # div or img
 
 	log: (args...) =>
@@ -48,8 +48,8 @@ class Sequencer.Player extends Pivot
 	###
 	_load_images: =>
 
-		@_cache 	 = []
-		loaded  	 = 0
+		@_cache      = []
+		loaded       = 0
 		total_frames = @get_total_frames()
 
 		on_load_complete = (img) =>
@@ -225,8 +225,46 @@ class Sequencer.Player extends Pivot
 	###
 	get_total_frames: -> @data.total_frames - 1
 
-	destroy: ->			
+	destroy: ->         
 		@el.innerHTML = ''
+
+
+class Sequencer.Blender extends Sequencer.Player
+
+	_update: =>
+
+		# Get the current frame
+		frame   = @mode.get_frame()
+
+		# Get the percent
+		percent = frame / @get_total_frames()
+		percent = Number percent.toFixed(2)
+
+		# Loop through all the frames and calculate the interpolated opacity
+		for i in [0..@get_total_frames()]
+
+			# Calculate current frame position within the overall percentage
+			position = i * (1 / @get_total_frames())
+
+			# Calculate distance from image position
+			dx = percent - position
+			distance = Math.sqrt dx * dx
+
+			# Update opacity
+			if distance <= 0.1
+
+				normalise = distance * 10
+
+				# Inverse
+				opacity = 1 - normalise
+
+				@_frames[i].style.visibility = 'visible'
+				@_frames[i].style.zIndex  = 1
+				@_frames[i].style.opacity = opacity
+			else
+				@_frames[i].style.visibility = 'hidden'
+				@_frames[i].style.zIndex  = 0
+				@_frames[i].style.opacity = 0
 
 
 # exporting
