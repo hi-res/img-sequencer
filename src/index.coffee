@@ -37,10 +37,6 @@ class Sequencer.Player extends Pivot
 	constructor: ( el ) ->
 
 		@el = document.getElementById el
-
-		@container = document.createElement 'div'
-		@container.style.position = 'absolute'
-		@el.appendChild @container
 		
 
 	###
@@ -86,6 +82,10 @@ class Sequencer.Player extends Pivot
 	Setup the container
 	###
 	_setup: =>
+
+		@container = document.createElement 'div'
+		@container.style.position = 'absolute'
+		@el.appendChild @container
 
 		# Scale for retina
 		width  = @data.frame.width  * @data.frame.scale
