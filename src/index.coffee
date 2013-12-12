@@ -25,7 +25,7 @@ class Sequencer.Player extends Pivot
 
 	chrome            : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
 	el                : null
-	current_frame     : true
+	current_frame     : 0
 	mode              : null
 	cssbackgroundsize : false
 	dev               : true
@@ -93,9 +93,9 @@ class Sequencer.Player extends Pivot
 
 		@_frames = []
 
-		for img, i in @_cache
+		if @cssbackgroundsize
 
-			if @cssbackgroundsize
+			for img, i in @_cache
 
 				el = document.createElement 'div'
 				el.style.position = 'absolute'
@@ -105,22 +105,24 @@ class Sequencer.Player extends Pivot
 				el.style.backgroundRepeat = "no-repeat"
 				el.style.visibility = 'hidden'
 
-			else
+				@_frames.push el
 
-				img.style.position   = 'absolute'
-				img.style.width      = '100%'
-				img.style.height     = '100%'
-				img.style.visibility = 'hidden'
+				@container.appendChild el
 
-				@tag_type = 'img'
+			@_cache = null
 
-				el = img
+		else
 
-			@_frames.push el
+			img = document.createElement 'img'
+			img.style.position   = 'absolute'
+			img.style.width      = '100%'
+			img.style.height     = '100%'
 
-			@container.appendChild el
+			@tag_type = 'img'
 
-		@_cache = null
+			@container.appendChild img
+
+			@img_el = $ img
 
 		@set_size width, height
 
@@ -134,17 +136,24 @@ class Sequencer.Player extends Pivot
 
 		if frame isnt @current_frame
 
-			# Hide the last image it it exists
-			if @_frames[@current_frame]?
+			if @cssbackgroundsize
 
-				@_frames[@current_frame].style.visibility = 'hidden'
-				@_frames[@current_frame].style.zIndex = 0
+				# Hide the last image it it exists
+				if @_frames[@current_frame]?
 
-			@current_frame = frame
+					@_frames[@current_frame].style.visibility = 'hidden'
+					@_frames[@current_frame].style.zIndex = 0
 
-			@_frames[@current_frame].style.visibility = 'visible'
-			@_frames[@current_frame].style.zIndex = 1
-	
+					@current_frame = frame
+
+					@_frames[@current_frame].style.visibility = 'visible'
+					@_frames[@current_frame].style.zIndex = 1
+
+			else
+
+				@current_frame = frame
+
+				@img_el.attr('src', $(@_cache[@current_frame]).attr('src'))
 
 	_resize: =>
 
