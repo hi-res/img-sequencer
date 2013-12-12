@@ -25,7 +25,7 @@ class Sequencer.Player extends Pivot
 
 	chrome            : (window.navigator.userAgent.toLowerCase().indexOf( 'chrome' ) > -1)
 	el                : null
-	current_frame     : 0
+	current_frame     : -1
 	mode              : null
 	cssbackgroundsize : false
 	dev               : true
@@ -144,10 +144,10 @@ class Sequencer.Player extends Pivot
 					@_frames[@current_frame].style.visibility = 'hidden'
 					@_frames[@current_frame].style.zIndex = 0
 
-					@current_frame = frame
+				@current_frame = frame
 
-					@_frames[@current_frame].style.visibility = 'visible'
-					@_frames[@current_frame].style.zIndex = 1
+				@_frames[@current_frame].style.visibility = 'visible'
+				@_frames[@current_frame].style.zIndex = 1
 
 			else
 

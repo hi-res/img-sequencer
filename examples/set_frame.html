@@ -29,6 +29,9 @@
 
 			player.set_mode(mode);	
 
+			mode.set_frame(0);
+			player.update();
+
 			window.addEventListener('mousemove', function(event){
 
 				var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
