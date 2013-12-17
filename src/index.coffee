@@ -78,6 +78,25 @@ class Sequencer.Player extends Pivot
 			loader = new Sequencer.ImageLoader(path, frame)
 			loader.on 'complete', on_load_complete
 
+
+	_create_frame: (src) ->
+
+		if @cssbackgroundsize 
+			el = document.createElement 'div'
+			el.style.position = 'absolute'
+			el.style.width    = '100%'
+			el.style.height   = '100%'
+			el.style.backgroundImage = "url(#{src})" if src
+			el.style.backgroundRepeat = "no-repeat"
+			el.style.visibility = 'hidden'
+		else
+			el = document.createElement 'img'
+			el.style.position   = 'absolute'
+			el.style.width      = '100%'
+			el.style.height     = '100%'
+
+		return el
+
 	###
 	Setup the container
 	###
@@ -97,13 +116,7 @@ class Sequencer.Player extends Pivot
 
 			for img, i in @_cache
 
-				el = document.createElement 'div'
-				el.style.position = 'absolute'
-				el.style.width    = '100%'
-				el.style.height   = '100%'
-				el.style.backgroundImage = "url(#{img.src})"
-				el.style.backgroundRepeat = "no-repeat"
-				el.style.visibility = 'hidden'
+				el = @_create_frame img.src
 
 				@_frames.push el
 
@@ -113,16 +126,19 @@ class Sequencer.Player extends Pivot
 
 		else
 
-			img = document.createElement 'img'
-			img.style.position   = 'absolute'
-			img.style.width      = '100%'
-			img.style.height     = '100%'
+			el = @_create_frame()
 
 			@tag_type = 'img'
 
 			@container.appendChild img
 
-			@img_el = $ img
+			@img_el    = $ img
+
+		# HD frame
+		hd_frame = @_create_frame()
+		@container.appendChild hd_frame
+		@_hd_frame = $ hd_frame
+		@_hd_frame.addClass 'hd_frame'
 
 		@set_size width, height
 
@@ -135,6 +151,8 @@ class Sequencer.Player extends Pivot
 		frame = @mode.get_frame()
 
 		if frame isnt @current_frame
+
+			@hide_hd_frame()
 
 			if @cssbackgroundsize
 
@@ -227,6 +245,35 @@ class Sequencer.Player extends Pivot
 	disable_automatic_resize: ->
 		$(window).off 'resize', @_resize
 
+
+	###
+	Show a high quality frame
+	@param [Image] img
+	###
+	show_hd_frame: (img) ->
+
+		if @cssbackgroundsize
+			src = "url(#{img.src})"
+			@_hd_frame.css('background-image', src)
+		else
+			@_hd_frame.attr('src', img.src)
+
+		TweenLite.to @_hd_frame, 0.3, {autoAlpha: 1}
+		
+		@_hd_frame.css
+			'z-index': 10
+
+	###
+	Hide the high quality frame
+	###
+	hide_hd_frame: ->
+
+		TweenLite.killTweensOf @_hd_frame
+
+		@_hd_frame.css
+			'visibility': 'hidden'
+			'opacity': 0
+			'z-index': 0
 
 	###
 	Return the number of frames in the sequence
