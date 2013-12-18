@@ -130,7 +130,7 @@ class Sequencer.Player extends Pivot
 
 			@tag_type = 'img'
 
-			@container.appendChild img
+			@container.appendChild el
 
 			@img_el    = $ img
 
