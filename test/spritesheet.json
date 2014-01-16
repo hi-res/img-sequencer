@@ -1,0 +1,24 @@
+{
+	"spritesheets": [
+		{
+			"source"      : "img/src2",
+			"output"      : "img/output/spritesheet",
+			"format"      : "jpg", 
+			"quality"     : 70,
+			"image_scale" : 1.0,
+			"tile_scale"  : 1.0,
+			"spritesheet_width": 1024,
+			"spritesheet_height": 1024,
+			"formats"     : [
+				"jpg",
+				"png",
+				"webp"
+			],
+			"keyframes" : {
+				"start"  : 0,
+				"middle" : 60,
+				"end"    : 119
+			}
+		}
+	]
+}
