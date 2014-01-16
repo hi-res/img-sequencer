@@ -194,8 +194,14 @@ def exporter(config):
 
 		frames_length += len(spritesheet_images)
 
-		# PNG is generated first for the alpha image mask
+		# PNG
+		if 'png' in EXTENSIONS:
 
+			out_name = OUTPUT_DIR + '/' + "%s.png" % i
+
+			cmd = "montage -strip -quality %s -depth 8 %s -tile %sx%s -geometry %sx%s+0+0 -background none -gravity center %s" % (QUALITY, in_name, int(max_frames_horizontal), int(max_frames_vertical), int(frame_size[0]), int(frame_size[1]), out_name)
+
+			run_process(cmd)
 
 		# JPG
 		if 'jpg' in EXTENSIONS:

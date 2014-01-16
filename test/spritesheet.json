@@ -11,7 +11,6 @@
 			"spritesheet_height": 1024,
 			"formats"     : [
 				"jpg",
-				"png",
 				"webp"
 			],
 			"keyframes" : {
