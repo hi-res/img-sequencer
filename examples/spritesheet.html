@@ -2,6 +2,13 @@
 <head>
 	<title>Sequencer test</title>
 
+	<style type="text/css">
+
+		body{
+			margin: 0;
+		}
+
+	</style>
 </head>
 <body>
 
@@ -20,10 +27,10 @@
 	<script>
 
 
-		player = new Sequencer.Player('container');
+		player = new Sequencer.SpritesheetPlayer('container');
 
-		if(Modernizr.backgroundsize)
-			player.cssbackgroundsize = true
+		// if(Modernizr.backgroundsize)
+		// 	player.cssbackgroundsize = true
 
 		player.on('setup_complete', function(){
 				
@@ -34,17 +41,21 @@
 			mode.set_frame(0);
 			player.update();
 
+			player.enable_automatic_resize()
+
 			window.addEventListener('mousemove', function(event){
 
 				var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
 
+				// console.debug(frame);
 				mode.set_frame(frame);
-				player.update(mode.get_frame());
+				// mode.set_frame(0);
+				player.update();
 			});
 
 		});
 
-		player.load('../test/img/output/sd', 'frames.json');
+		player.load('../test/img/output/spritesheet', 'frames.json');
 
 	</script>
 

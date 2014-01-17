@@ -160,20 +160,12 @@ def exporter(config):
 
 	print "Frames per spritesheet: %s \n" % frames_per_spritesheet
 
-
 	frames_data   = []
 	images_data   = []
 	frames_length = 0
 	length        = len(images)
 	progress      = 0
 	source_images = []
-
-
-	# for img in _images:
-	# 	source_images.append(img + FORMAT)
-
-
-	# sys.exit('xx')
 
 	for i in range(spritesheets_num):
 
@@ -189,8 +181,6 @@ def exporter(config):
 			spritesheet_images = images[index_start:]
 
 		in_name = ' '.join(spritesheet_images) 
-
-		print in_name
 
 		frames_length += len(spritesheet_images)
 
@@ -236,7 +226,10 @@ def exporter(config):
 	print "Saving json..."
 
 	data = dict(type 	     = "spritesheet",
+				width 		 = max_frames_horizontal * frame_size[0],
+				height       = max_frames_vertical * frame_size[1],
 				total_frames = num_images,
+				total_spritesheets = spritesheets_num,
 				frames_per_spritesheet = frames_per_spritesheet,
 				extensions   = EXTENSIONS,
 				keyframes    = keyframes,
