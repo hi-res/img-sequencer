@@ -5,6 +5,8 @@ class Sequencer.SpritesheetPlayer extends Pivot
 	el                : null
 	current_frame     : -1
 	spritesheet_index : -1
+	offset_x		  : 0
+	offset_y		  : 0
 	mode              : null
 	cssbackgroundsize : false
 	dev               : true
@@ -16,6 +18,7 @@ class Sequencer.SpritesheetPlayer extends Pivot
 	constructor: ( el ) ->
 
 		@el = document.getElementById el
+		@el.style.overflow = 'hidden'
 
 
 
@@ -75,7 +78,7 @@ class Sequencer.SpritesheetPlayer extends Pivot
 	Setup the container
 	###
 	_setup: =>
-		@log 'setup'
+		# @log 'setup'
 
 		# Create a div for each spritesheet
 
@@ -89,8 +92,8 @@ class Sequencer.SpritesheetPlayer extends Pivot
 		@frame_width = @data.frame.width
 		@frame_height = @data.frame.height
 
-		@max_frames_horizontal  = Math.floor(@data.width  / @data.frame.width)
-		@max_frames_vertical    = Math.floor(@data.height / @data.frame.height)
+		@max_frames_horizontal  = Math.round(@data.width  / @data.frame.width)
+		@max_frames_vertical    = Math.round(@data.height / @data.frame.height)
 
 		@_frames = []
 
@@ -114,7 +117,7 @@ class Sequencer.SpritesheetPlayer extends Pivot
 
 		@trigger 'setup_complete', @
 
-	_update: =>
+	_update: (force = false) =>
 
 		# Get the current frame
 		frame = @mode.get_frame()
@@ -141,22 +144,14 @@ class Sequencer.SpritesheetPlayer extends Pivot
 					xpos = x
 					ypos = y
 					break
-				
-		
-		# @log 'x', x, 'y', y
-		# @log 'tile', tile, 'xpos', xpos, 'ypos', ypos
 
-		# xpos = 0
-		# ypos = 0
+		background_x = -(xpos * @frame_width)
+		background_y = -(ypos * @frame_height)
 
+		background_x += @offset_x
+		background_y += @offset_y
 
-		background_x = -(xpos * @frame_width) + 'px'
-		background_y = -(ypos * @frame_height) + 'px'
-
-		# @log 'x', background_x, 'y', background_y
-
-
-		if frame isnt @current_frame
+		if frame isnt @current_frame or force
 
 			@hide_hd_frame()
 
@@ -169,8 +164,8 @@ class Sequencer.SpritesheetPlayer extends Pivot
 			@current_frame = frame
 			@spritesheet_index = spritesheet_index
 
-			@_frames[spritesheet_index].style.backgroundPositionX = background_x
-			@_frames[spritesheet_index].style.backgroundPositionY = background_y
+			@_frames[spritesheet_index].style.backgroundPositionX = background_x + 'px'
+			@_frames[spritesheet_index].style.backgroundPositionY = background_y + 'px'
 			@_frames[spritesheet_index].style.visibility = 'visible'
 			@_frames[spritesheet_index].style.zIndex = 1
 
@@ -181,6 +176,8 @@ class Sequencer.SpritesheetPlayer extends Pivot
 		$window = $(window)
 
 		@set_size $window.width(), $window.height()
+
+		@_update(true)
 
 
 	###----------------------------------------------
@@ -218,15 +215,19 @@ class Sequencer.SpritesheetPlayer extends Pivot
 
 	set_size: (@width, @height) =>
 
-		@el.style.width  = @width  + 'px'
-		@el.style.height = @height + 'px'
+		# @log 'set size', @width, @height
 
-		@container.style.width  = @el.style.width
-		@container.style.height = @el.style.height
+		# @el.style.width  = @width  + 'px'
+		# @el.style.height = @height + 'px'
+
+		@container.style.width  = @width  + 'px'
+		@container.style.height = @height + 'px'
+
+		# @log 'el', @el
 
 		$frames = $(@container).find @tag_type
 
-		[@frame_width, @frame_height] = Sequencer.util.resize_spritesheet $frames, @data.frame.width, @data.frame.height, @width, @height, @max_frames_horizontal, @max_frames_vertical
+		[@frame_width, @frame_height, @offset_x, @offset_y] = Sequencer.util.resize_spritesheet $frames, @data.frame.width, @data.frame.height, @width, @height, @max_frames_horizontal, @max_frames_vertical
 
 		# @log 'resized', @frame_width, @frame_height
 

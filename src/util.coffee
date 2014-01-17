@@ -71,6 +71,6 @@ Sequencer.util =
 		size_y = data.height * max_frames_vertical
 
 		$images.css
-			'background-size'     : "#{size_x}px #{size_y}px"
+			'background-size' : "#{size_x}px #{size_y}px"
 
-		return [data.width, data.height]
+		return [data.width, data.height, data.x, data.y]
