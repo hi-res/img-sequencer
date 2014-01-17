@@ -62,9 +62,10 @@ class Sequencer.SpritesheetPlayer extends Pivot
 			loader.on 'complete', on_load_complete
 
 
-	_create_frame: (src) ->
+	_create_frame: (src, class_name) ->
 
 		el = document.createElement 'div'
+		el.className      = class_name
 		el.style.position = 'absolute'
 		el.style.width    = '100%'
 		el.style.height   = '100%'
@@ -99,7 +100,7 @@ class Sequencer.SpritesheetPlayer extends Pivot
 
 		for img, i in @_cache
 
-			el = @_create_frame img.src
+			el = @_create_frame img.src, 'sd_frame'
 
 			@_frames.push el
 
@@ -108,10 +109,9 @@ class Sequencer.SpritesheetPlayer extends Pivot
 		@_cache = null
 
 		# HD frame
-		hd_frame = @_create_frame()
+		hd_frame = @_create_frame('', 'hd_frame')
 		@container.appendChild hd_frame
 		@_hd_frame = $ hd_frame
-		@_hd_frame.addClass 'hd_frame'
 
 		@set_size width, height
 
@@ -225,10 +225,11 @@ class Sequencer.SpritesheetPlayer extends Pivot
 
 		# @log 'el', @el
 
-		$frames = $(@container).find @tag_type
+		$frames = $(@container).find '.sd_frame'
+		hd_frame = $(@container).find '.hd_frame'
 
 		[@frame_width, @frame_height, @offset_x, @offset_y] = Sequencer.util.resize_spritesheet $frames, @data.frame.width, @data.frame.height, @width, @height, @max_frames_horizontal, @max_frames_vertical
-
+		Sequencer.util.resize hd_frame, @data.frame.width, @data.frame.height, @width, @height, true
 		# @log 'resized', @frame_width, @frame_height
 
 
@@ -258,11 +259,8 @@ class Sequencer.SpritesheetPlayer extends Pivot
 	###
 	show_hd_frame: (img) ->
 
-		if @cssbackgroundsize
-			src = "url(#{img.src})"
-			@_hd_frame.css('background-image', src)
-		else
-			@_hd_frame.attr('src', img.src)
+		src = "url(#{img.src})"
+		@_hd_frame.css('background-image', src)
 
 		TweenLite.to @_hd_frame, 0.3, {autoAlpha: 1}
 		
