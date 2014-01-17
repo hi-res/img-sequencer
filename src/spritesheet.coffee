@@ -217,8 +217,8 @@ class Sequencer.SpritesheetPlayer extends Pivot
 
 		# @log 'set size', @width, @height
 
-		# @el.style.width  = @width  + 'px'
-		# @el.style.height = @height + 'px'
+		@el.style.width  = '100%'
+		@el.style.height = '100%'
 
 		@container.style.width  = @width  + 'px'
 		@container.style.height = @height + 'px'
