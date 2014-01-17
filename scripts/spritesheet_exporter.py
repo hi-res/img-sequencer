@@ -187,7 +187,7 @@ def exporter(config):
 
 			out_name = OUTPUT_DIR + '/' + "%s.png" % i
 
-			cmd = "montage -strip -quality %s -depth 8 %s -tile %sx%s -geometry %sx%s+0+0 -background none -gravity center %s" % (QUALITY, in_name, int(max_frames_horizontal), int(max_frames_vertical), int(frame_size[0]), int(frame_size[1]), out_name)
+			cmd = "montage -strip -quality %s -depth 8 %s -tile %sx%s -geometry %sx%s+-1+0 %s" % (QUALITY, in_name, int(max_frames_horizontal), int(max_frames_vertical), int(frame_size[0]), int(frame_size[1]), out_name)
 
 			run_process(cmd)
 
@@ -196,7 +196,7 @@ def exporter(config):
 
 			out_name = OUTPUT_DIR + '/' + "%s.jpg" % i
 
-			cmd = "montage -strip -quality %s -depth 8 %s -tile %sx%s -geometry %sx%s+0+0 -background none -gravity center %s" % (QUALITY, in_name, int(max_frames_horizontal), int(max_frames_vertical), int(frame_size[0]), int(frame_size[1]), out_name)
+			cmd = "montage -strip -quality %s -depth 8 %s -tile %sx%s -geometry %sx%s+-1+0 %s" % (QUALITY, in_name, int(max_frames_horizontal), int(max_frames_vertical), int(frame_size[0]), int(frame_size[1]), out_name)
 
 			run_process(cmd)
 		
