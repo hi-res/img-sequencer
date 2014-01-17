@@ -1,52 +1,14 @@
 {
 	"spritesheets": [
 		{
-			"source"      : "img/src2",
+			"source"      : "img/src3",
 			"output"      : "img/output/spritesheet/desktop",
-			"format"      : "jpg", 
-			"quality"     : 70,
-			"image_scale" : 1.0,
-			"tile_scale"  : 1.0,
-			"spritesheet_width": 2048,
-			"spritesheet_height": 2048,
-			"formats"     : [
-				"jpg",
-				"webp"
-			],
-			"keyframes" : {
-				"start"  : 0,
-				"middle" : 60,
-				"end"    : 119
-			}
-		},
-		{
-			"source"      : "img/src2",
-			"output"      : "img/output/spritesheet/tablet",
 			"format"      : "jpg", 
 			"quality"     : 70,
 			"image_scale" : 0.7,
 			"tile_scale"  : 1.0,
-			"spritesheet_width": 1200,
-			"spritesheet_height": 1200,
-			"formats"     : [
-				"jpg",
-				"webp"
-			],
-			"keyframes" : {
-				"start"  : 0,
-				"middle" : 60,
-				"end"    : 119
-			}
-		},
-		{
-			"source"      : "img/src2",
-			"output"      : "img/output/spritesheet/mobile",
-			"format"      : "jpg", 
-			"quality"     : 70,
-			"image_scale" : 0.5,
-			"tile_scale"  : 1.0,
-			"spritesheet_width": 1024,
-			"spritesheet_height": 1024,
+			"spritesheet_width": 2048,
+			"spritesheet_height": 2048,
 			"formats"     : [
 				"jpg",
 				"webp"

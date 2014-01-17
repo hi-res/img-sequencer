@@ -122,7 +122,7 @@ class Sequencer.SpritesheetPlayer extends Pivot
 		# Get the current frame
 		frame = @mode.get_frame()
 
-		# @log 'frame', frame
+		@log 'frame', frame
 
 		# Get the current spritesheet
 		spritesheet_index = Math.floor frame / @data.frames_per_spritesheet

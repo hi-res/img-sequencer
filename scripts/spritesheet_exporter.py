@@ -6,6 +6,7 @@ import os
 import sys
 import subprocess
 import time
+import math
 from optparse import OptionParser
 
 
@@ -153,10 +154,7 @@ def exporter(config):
 	# The amount of spritesheets to generate
 	spritesheets_num = len(files) / float(frames_per_spritesheet)
 
-	if spritesheets_num < 1:
-		spritesheets_num = int(math.ceil(spritesheets_num))
-	else:
-		spritesheets_num = int(round(spritesheets_num))
+	spritesheets_num = int(math.ceil(spritesheets_num))
 
 	print "Frames per spritesheet: %s \n" % frames_per_spritesheet
 
@@ -226,8 +224,8 @@ def exporter(config):
 	print "Saving json..."
 
 	data = dict(type 	     = "spritesheet",
-				width 		 = max_frames_horizontal * frame_size[0],
-				height       = max_frames_vertical * frame_size[1],
+				width 		 = round(max_frames_horizontal * frame_size[0]),
+				height       = round(max_frames_vertical * frame_size[1]),
 				total_frames = num_images,
 				total_spritesheets = spritesheets_num,
 				frames_per_spritesheet = frames_per_spritesheet,
