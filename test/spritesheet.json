@@ -2,9 +2,9 @@
 	"spritesheets": [
 		{
 			"source"      : "img/src3",
-			"output"      : "img/output/spritesheet/desktop",
+			"output"      : "img/output/spritesheet/desktop/ss_55",
 			"format"      : "jpg", 
-			"quality"     : 70,
+			"quality"     : 55,
 			"image_scale" : 0.7,
 			"tile_scale"  : 1.0,
 			"spritesheet_width": 2048,
@@ -14,9 +14,6 @@
 				"webp"
 			],
 			"keyframes" : {
-				"start"  : 0,
-				"middle" : 60,
-				"end"    : 119
 			}
 		}
 	]
