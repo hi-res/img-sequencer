@@ -1,0 +1,18 @@
+{
+	"sequences": [
+		{
+			"source"      : "img/src3",
+			"output"      : "img/output/spritesheet/desktop/85",
+			"format"      : "jpg", 
+			"quality"     : 85,
+			"image_scale" : 1.0,
+			"tile_scale"  : 1.0,
+			"formats"     : [
+				"jpg",
+				"webp"
+			],
+			"keyframes" : {
+			}
+		}
+	]
+}

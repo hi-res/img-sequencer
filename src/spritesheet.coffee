@@ -122,8 +122,6 @@ class Sequencer.SpritesheetPlayer extends Pivot
 		# Get the current frame
 		frame = @mode.get_frame()
 
-		@log 'frame', frame
-
 		# Get the current spritesheet
 		spritesheet_index = Math.floor frame / @data.frames_per_spritesheet
 
@@ -164,8 +162,11 @@ class Sequencer.SpritesheetPlayer extends Pivot
 			@current_frame = frame
 			@spritesheet_index = spritesheet_index
 
-			@_frames[spritesheet_index].style.backgroundPositionX = background_x + 'px'
-			@_frames[spritesheet_index].style.backgroundPositionY = background_y + 'px'
+			x = background_x + 'px'
+			y = background_y + 'px'
+
+			@_frames[spritesheet_index].style.backgroundPosition = "#{x} #{y}"
+
 			@_frames[spritesheet_index].style.visibility = 'visible'
 			@_frames[spritesheet_index].style.zIndex = 1
 
