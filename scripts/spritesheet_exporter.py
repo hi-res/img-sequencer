@@ -202,7 +202,7 @@ def exporter(config):
 		
 
 		# WEBP only if png enabled
-		if 'jpg' in EXTENSIONS:
+		if 'webp' in EXTENSIONS:
 
 			webp_out_name = OUTPUT_DIR + '/' + "%s.webp" % i
 

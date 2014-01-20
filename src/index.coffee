@@ -132,7 +132,9 @@ class Sequencer.Player extends Pivot
 
 			@container.appendChild el
 
-			@img_el    = $ img
+			@img_el    = $ el
+
+			# console.log 'x', @img_el
 
 		# HD frame
 		hd_frame = @_create_frame()
@@ -171,7 +173,12 @@ class Sequencer.Player extends Pivot
 
 				@current_frame = frame
 
+				# console.log 'src', $(@_cache[@current_frame]).attr('src')
+
+				# @img_el.setAttribute('src', $(@_cache[@current_frame]).attr('src'))
 				@img_el.attr('src', $(@_cache[@current_frame]).attr('src'))
+
+				# console.log 'new src', @img_el.attr('src')
 
 	_resize: =>
 

@@ -8,7 +8,7 @@
 	<div id="container"></div>
 
 	<script src="vendors/modernizr.custom.78569.js"></script>
-	<script src="vendors/jquery-2.0.3.min.js"></script>
+	<script src="vendors/jquery-1.10.2.min.js"></script>
 	<script src="vendors/EasePack.min.js"></script>
 	<script src="vendors/TweenMax.min.js"></script>
 
@@ -20,28 +20,30 @@
 	<script>
 
 
-		player = new Sequencer.Player('container');
+		var player = new Sequencer.Player('container');
 
 		if(Modernizr.backgroundsize)
 			player.cssbackgroundsize = true
 
 		player.on('setup_complete', function(){
 				
-			mode = new Sequencer.FrameMode(player.data)
+			var mode = new Sequencer.FrameMode(player.data);
 
 			player.set_mode(mode);	
 
-			mode.set_frame(0);
+			mode.set_frame(17);
 			player.update();
 
-			window.addEventListener('mousemove', function(event){
+			// $(window).mousemove(function(){
 
-				var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
+			// 	var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
 
-				mode.set_frame(frame);
-				player.update(mode.get_frame());
-			});
+			// 	mode.set_frame(frame);
 
+			// 	console.log('frame', frame);
+
+			// 	player.update(mode.get_frame());
+			// });
 		});
 
 		player.load('../test/img/output/sd', 'frames.json');
