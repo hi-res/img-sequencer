@@ -1,0 +1,23 @@
+{
+	"sequences": [
+		{
+			"type": "sequence"
+			,"dir": "test/img"
+			,"src": "src"
+			,"out": "output"
+			,"format": "jpg"
+			,"quality": "100"
+			,"scale": 1
+			,"src_width": 200
+			,"src_height": 200
+			,"spacing_x": 0
+			,"spacing_y": 0
+			,"spritesheet_width": 1024
+			,"spritesheet_height": 1024
+			,"extensions": ["png", "jpg", "webp"]
+			,"keyframes": {
+				"start": 0
+			}
+		}
+	]
+}
