@@ -14,11 +14,11 @@ WEBP_PATH  = pwd()
 # Import config
 
 
-exporter = (config) ->
+exporter = (dir, config) ->
 
 	echo '--> Export starting'
 
-	cd config.dir
+	cd dir
 
 	# Make the output directory
 	mkdir '-p', config.out
@@ -130,9 +130,12 @@ exporter = (config) ->
 			echo err
 			return
 
+	cd SCRIPT_DIR
+
 	echo '--> Export complete'
 
 
 
 for config in CONFIGS['sequences']
-	exporter config
+	for dir in config.dirs
+		exporter dir, config

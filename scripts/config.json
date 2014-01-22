@@ -1,8 +1,8 @@
 {
 	"sequences": [
 		{
-			"type": "sequence"
-			,"dir": "test/img"
+			"type": "spritesheet"
+			,"dirs": ["test/img1", "test/img2"]
 			,"src": "src"
 			,"out": "output"
 			,"format": "jpg"
