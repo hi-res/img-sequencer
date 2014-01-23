@@ -1,1 +1,0 @@
-python ../scripts/exporter.py --config sequence.json
