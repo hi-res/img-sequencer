@@ -42,9 +42,6 @@
 
 		player = new Sequencer.SpritesheetPlayer('container');
 
-		// if(Modernizr.backgroundsize)
-		// 	player.cssbackgroundsize = true
-
 		player.on('setup_complete', function(){
 				
 			mode = new Sequencer.FrameMode(player.data)
@@ -54,15 +51,13 @@
 			mode.set_frame(0);
 			player.update();
 
-			player.enable_automatic_resize()
+			// player.enable_automatic_resize()
 
 			window.addEventListener('mousemove', function(event){
 
 				var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
 
-				// console.debug(frame);
 				mode.set_frame(frame);
-				// mode.set_frame(0);
 				player.update();
 			});
 
