@@ -4,13 +4,11 @@ Image sequence and spritesheet utility for the web.
 
 ## Setup
 
+This will install the required node modules and image utlities required to run the exporting scripts.
+
 ```
 make setup
 ```
-
-## Testing
-
-*todo*
 
 ## Examples
 
@@ -18,4 +16,4 @@ make setup
 make test-server
 ```
 
-And open ```examples/modes.html```
+And open [localhost:8080/examples](http://localhost:8080/examples)
