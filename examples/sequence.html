@@ -31,22 +31,16 @@
 
 			player.set_mode(mode);	
 
-			mode.set_frame(17);
-			player.update();
+			$(window).mousemove(function(){
 
-			// $(window).mousemove(function(){
+				var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
 
-			// 	var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
-
-			// 	mode.set_frame(frame);
-
-			// 	console.log('frame', frame);
-
-			// 	player.update(mode.get_frame());
-			// });
+				mode.set_frame(frame);
+				player.update();
+			});
 		});
 
-		player.load('../test/img/output/sd', 'frames.json');
+		player.load('../scripts/test/img/output/sequence', 'frames.json');
 
 	</script>
 
