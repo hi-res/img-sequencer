@@ -6,6 +6,9 @@ VERSION=0.0.3
 
 setup:
 	npm install
+	npm install -g shjs
+	npm install -g image-size
+	brew install imagemagick
 
 watch:
 	@$(CS) -w -b -cj lib/index.js src/*.coffee
