@@ -1,6 +1,6 @@
 # img-sequencer
 
-Image sequence utility for the browser
+Image sequence and spritesheet utility for the web.
 
 ## Setup
 
