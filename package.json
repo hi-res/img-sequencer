@@ -20,6 +20,6 @@
     "mversion": "0.2.0"
   },
   "dependencies": {
-    "the-pivot": "~0.2.0"
+    "the-pivot": "*"
   }
 }

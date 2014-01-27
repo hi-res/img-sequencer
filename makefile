@@ -5,7 +5,6 @@ MVERSION=node_modules/mversion/bin/version
 VERSION=0.0.3
 
 setup:
-
 	npm install
 
 watch:
@@ -47,14 +46,7 @@ test:
 		tests/runner.coffee --env='local'
 
 test-server:
- 
 	python -m SimpleHTTPServer 8080
 
 test-exporter:
-
-	@echo 'Running exporter test'
-	cd test && sh exporter.sh
-
-test-spritesheet:
-
-	cd test && sh spritesheet.sh
+	cd test && shjs exporter

@@ -4,4 +4,6 @@
 /npm-debug.log
 /src/*.js
 
-/test/img/src3/
+/scripts/test/img/output
+
+/scripts/test/video/

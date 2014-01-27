@@ -1,0 +1,10 @@
+{
+	"videos": [
+		{
+			"dirs": ["test/video"]
+			,"src": ["test.mp4"]
+			,"out": "output"
+			,"frame_rate": 15
+		}
+	]
+}
