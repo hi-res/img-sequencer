@@ -1,18 +1,3 @@
-###
-Spritesheet and image sequence exporter
-
-Dependancies:
-
-	node:
-		shjs
-
-	other:
-		imagemagick
-
-	ulimit -n 10000
-
-###
-
 require 'shelljs/global'
 _  = require 'lodash'
 fs = require 'fs'
