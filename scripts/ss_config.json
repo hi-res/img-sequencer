@@ -7,9 +7,8 @@
 			,"out": "output/spritesheet"
 			,"format": "jpg"
 			,"quality": "100"
-			,"scale": 1
-			,"src_width": 200
-			,"src_height": 200
+			,"src_scale": 1
+			,"frame_scale": 1
 			,"spacing_x": 0
 			,"spacing_y": 0
 			,"spritesheet_width": 1024
@@ -26,9 +25,26 @@
 			,"out": "output/sequence"
 			,"format": "jpg"
 			,"quality": "100"
-			,"scale": 1
-			,"src_width": 200
-			,"src_height": 200
+			,"src_scale": 1
+			,"frame_scale": 1
+			,"extensions": ["jpg", "webp"]
+			,"keyframes": {
+				"start": 0
+			}
+		},
+		{
+			"type": "spritesheet"
+			,"dirs": ["test/img2"]
+			,"src": "src"
+			,"out": "output/spritesheet"
+			,"format": "jpg"
+			,"quality": "100"
+			,"src_scale": 0.5
+			,"frame_scale": 1
+			,"spacing_x": 0
+			,"spacing_y": 0
+			,"spritesheet_width": 2048
+			,"spritesheet_height": 2048
 			,"extensions": ["jpg", "webp"]
 			,"keyframes": {
 				"start": 0

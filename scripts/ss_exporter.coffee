@@ -9,19 +9,23 @@ Dependancies:
 	other:
 		imagemagick
 
+	ulimit -n 10000
+
 ###
 
 require 'shelljs/global'
 _  = require 'lodash'
 fs = require 'fs'
+sizeOf = require 'image-size'
 
 CONFIGS    = require './ss_config.json'
 SCRIPT_DIR = pwd()
 WEBP_PATH  = pwd()
 
-exporter = (dir, config) ->
+exporter = (dir, config, callback) ->
 
-	echo '--> Export starting'
+	echo '------------------------------------------------'
+	echo "[#{dir}] Export starting"
 
 	cd dir
 
@@ -41,19 +45,28 @@ exporter = (dir, config) ->
 	
 	cd '..'
 
-	sort_files = ( a, b ) ->
-		a = Number( a.split('.')[0] )
-		b = Number( b.split('.')[0] )
-		return a - b
+	# sort_files = ( a, b ) ->
+	# 	a = Number( a.split('.')[0] )
+	# 	b = Number( b.split('.')[0] )
+	# 	return a - b
 
-	images.sort sort_files
+	# images.sort sort_files
 
 	# Copy source files to tmp dir
 	cp '-R', "#{config.src}/*", tmp_dir
 
-	image_width  = config.src_width * config.scale
-	image_height = config.src_height * config.scale
+	# Array of bash commands to execute
+	cmds = []
+
+	# Get dimensions of first image
+	dimensions = sizeOf tmp_dir + '/' + images[0]
+
+	image_width  = Math.ceil dimensions.width * config.src_scale
+	image_height = Math.ceil dimensions.height * config.src_scale
 	num_images 	 = images.length
+
+	# echo 'image_width', image_width
+	# echo 'image_height', image_height
 
 	data = 
 		type:   config.type
@@ -63,7 +76,9 @@ exporter = (dir, config) ->
 		frame:
 			width: image_width
 			height: image_height
-			scale: config.scale
+			scale: config.frame_scale
+
+	# return
 
 	if config.type is 'spritesheet'
 
@@ -86,9 +101,13 @@ exporter = (dir, config) ->
 			frames_list = frames.join " #{tmp_dir}/"
 			frames_list = "#{tmp_dir}/" + frames_list
 
+			# for frame in frames
+			# 	echo frame
+
+			# continue
+
 			for ext in config.extensions
 
-				cmd = ''
 				out_name = config.out + '/' + "#{i}.#{ext}"
 
 				switch ext
@@ -96,19 +115,14 @@ exporter = (dir, config) ->
 
 						out_name_jpg = config.out + '/' + "#{i}.jpg"
 
-						cmd = "#{WEBP_PATH}/cwebp #{out_name_jpg} -o #{out_name} -quiet"
-
+						cmds.push "#{WEBP_PATH}/cwebp #{out_name_jpg} -o #{out_name} -quiet"
 					else
-						cmd = "montage -strip -quality #{config.quality} -depth 8 #{frames_list} -tile #{max_frames_horizontal}x#{max_frames_vertical} -geometry #{image_width}x#{image_height}+#{config.spacing_x}+#{config.spacing_y} #{out_name}"
+						cmds.push "montage -strip -quality #{config.quality} -depth 8 #{frames_list} -tile #{max_frames_horizontal}x#{max_frames_vertical} -geometry #{image_width}x#{image_height}+#{config.spacing_x}+#{config.spacing_y} #{out_name}"
 
-
-				exec cmd
-
-			echo "Progress #{i+1} / #{num_spritesheets}"
 
 		# Add additional spritesheet data
-		data.width 					= max_frames_horizontal * image_width
-		data.height 				= max_frames_horizontal * image_height
+		data.width 					= Math.ceil max_frames_horizontal * image_width
+		data.height 				= Math.ceil max_frames_vertical * image_height
 		data.total_spritesheets 	= num_spritesheets
 		data.frames_per_spritesheet = frames_per_spritesheet
 
@@ -122,45 +136,74 @@ exporter = (dir, config) ->
 
 			for ext in config.extensions
 
-				cmd = ''
 				in_name  = tmp_dir + '/' + img
 				out_name = config.out + '/' + "#{i}.#{ext}"
-				scale = config.scale * 100
-
-				# echo 'in_name', in_name
-				# echo 'out_name', out_name
+				scale = config.src_scale * 100
 				
 				switch ext
 					when 'webp'
 						out_name_jpg = config.out + '/' + "#{i}.jpg"
 
-						cmd = "#{WEBP_PATH}/cwebp #{out_name_jpg} -o #{out_name} -quiet"
+						cmds.push "#{WEBP_PATH}/cwebp #{out_name_jpg} -o #{out_name} -quiet"
 
 					else
 
-						cmd  = "convert #{in_name} -resize #{scale}% -depth 6 -quality #{config.quality} #{out_name}"
-
-				exec cmd
-
-			echo "Progress #{i+1} / #{num_images}"
+						cmds.push "convert #{in_name} -resize #{scale}% -depth 6 -quality #{config.quality} #{out_name}"
 
 
-	# Remove the tmp directory
-	rm '-rf', tmp_dir
+	export_json = =>
 
-	frames_json = config.out + '/frames.json'
-	
-	fs.writeFile frames_json, JSON.stringify(data), (err) ->
-		if err
-			echo err
+		# Remove the tmp directory
+		rm '-rf', tmp_dir
+
+		frames_json = config.out + '/frames.json'
+		
+		fs.writeFile frames_json, JSON.stringify(data), (err) ->
+			if err
+				echo err
+				return
+
+		cd SCRIPT_DIR
+
+		echo "[#{dir}] Export complete"
+
+		callback()
+
+	num_cmds = cmds.length
+
+	run = (cmds) =>
+
+		if cmds.length is 0
+			export_json()
 			return
 
-	cd SCRIPT_DIR
+		echo "[#{dir}] Progress #{num_cmds-cmds.length+1} / #{num_cmds}"
 
-	echo '--> Export complete'
+		cmd = cmds.shift()
+
+		exec cmd, (code, output) ->
+			# console.log('Exit code:', code);
+			# console.log('Program output:', output);
+			run cmds
+
+	run cmds
 
 
+run = (sequences) =>
 
+	if sequences.length is 0
+		# Done
+		return
+
+	config = sequences.shift()
+
+	exporter config[0], config[1], ->
+		run sequences
+
+
+sequences = []
 for config in CONFIGS['sequences']
 	for dir in config.dirs
-		exporter dir, config
+		sequences.push [dir, config]
+
+run sequences
