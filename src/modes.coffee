@@ -6,7 +6,6 @@ class Sequencer.FrameMode extends Pivot
 	frame: 0
 
 	constructor: (@data) ->
-		console.log( 'LINEAR CONSTRUCTOR' )
 
 	update: ->
 
