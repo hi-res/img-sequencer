@@ -18,6 +18,24 @@
 			overflow: hidden;
 		}*/
 
+		#debug_div {
+			width: 50px;
+			height: 43px;
+			padding-top: 7px;
+			background: white;
+			text-align: center;
+			color: black;
+			position: fixed;
+			left: 50%;
+			top: 50%;
+			margin-left: -25px;
+			margin-top: -25px;
+			z-index: 10;
+			font-size: 30px;
+			font-weight: bold;
+			font-family: Helvetica;
+		}
+
 	</style>
 </head>
 <body>
@@ -51,19 +69,25 @@
 			mode.set_frame(0);
 			player.update();
 
-			// player.enable_automatic_resize()
+			player.enable_automatic_resize();
+			console.log( '-- enable_automatic_resize' )
+
+			var debug = $( '<div id="debug_div"/>' );
+			$( '#container' ).append( debug );
+
 
 			window.addEventListener('mousemove', function(event){
 
 				var frame = Math.round((event.pageX / window.innerWidth) * player.get_total_frames());
 
+				debug.html( frame );
 				mode.set_frame(frame);
 				player.update();
 			});
 
 		});
 
-		player.load('../scripts/test/img/output/spritesheet', 'frames.json');
+		player.load('../scripts/test/img_2/output/spritesheet', 'frames.json');
 
 	</script>
 

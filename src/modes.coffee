@@ -6,6 +6,7 @@ class Sequencer.FrameMode extends Pivot
 	frame: 0
 
 	constructor: (@data) ->
+		console.log( 'LINEAR CONSTRUCTOR' )
 
 	update: ->
 
@@ -22,6 +23,7 @@ class Sequencer.LinearMode extends Pivot
 	frame: 0
 
 	constructor: (@data) ->
+
 
 	play: (duration = 1, end_frame = 1, ease = Linear.easeNone) ->
 

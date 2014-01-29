@@ -216,7 +216,7 @@ class Sequencer.SpritesheetPlayer extends Pivot
 
 	set_size: (@width, @height) =>
 
-		# @log 'set size', @width, @height
+		@log 'set size', @width, @height
 
 		@el.style.width  = '100%'
 		@el.style.height = '100%'
@@ -230,8 +230,23 @@ class Sequencer.SpritesheetPlayer extends Pivot
 		hd_frame = $(@container).find '.hd_frame'
 
 		[@frame_width, @frame_height, @offset_x, @offset_y] = Sequencer.util.resize_spritesheet $frames, @data.frame.width, @data.frame.height, @width, @height, @max_frames_horizontal, @max_frames_vertical
+
+		@frame_width = Math.floor( @frame_width	)
+		@frame_height = Math.floor( @frame_height )
+
+		# @frame_width = parseInt( @frame_width	)
+		# @frame_height = parseInt( @frame_height )
 		Sequencer.util.resize hd_frame, @data.frame.width, @data.frame.height, @width, @height, true
-		# @log 'resized', @frame_width, @frame_height
+
+
+		original_size =
+			w : 512
+			h : 288
+
+		prop_w = @width / original_size.w 
+		prop_h = @height / original_size.h
+
+		# @log 'resized', @frame_width, @frame_height, 'prop', prop_w, prop_h
 
 
 	update: => 

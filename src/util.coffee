@@ -9,17 +9,17 @@ Sequencer.util =
 		image_ratio2 = image_height / image_width
 
 		if window_ratio < image_ratio1
-			# log 'portrait'
+			
 			new_height = win_height
-			new_width  = new_height * image_ratio1
+			new_width  = Math.round( new_height * image_ratio1 )
 
 			new_top  = 0
 			new_left = (win_width * .5) - (new_width * .5) 
 
 		else
-			# log 'landscape'
+			
 			new_width  = win_width
-			new_height = new_width * image_ratio2
+			new_height = Math.round( new_width * image_ratio2 );
 
 			new_top  = (win_height * .5) - (new_height * .5)
 			new_left = 0 

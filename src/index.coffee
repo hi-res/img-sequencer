@@ -222,6 +222,9 @@ class Sequencer.Player extends Pivot
 
 	set_size: (@width, @height) =>
 
+
+		console.log 'set size', @width, @height
+
 		@el.style.width  = @width  + 'px'
 		@el.style.height = @height + 'px'
 
