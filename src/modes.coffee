@@ -23,10 +23,10 @@ class Sequencer.LinearMode extends Pivot
 
 	constructor: (@data) ->
 
-	play: (duration = 1, ease = Linear.easeNone) ->
+	play: (duration = 1, end_frame = 1, ease = Linear.easeNone) ->
 
 		params =
-			frame: @total_frames()
+			frame: end_frame
 			onUpdate: @_update
 			onComplete: @_complete
 			ease : ease
