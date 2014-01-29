@@ -167,8 +167,8 @@ exporter = (dir, config, callback) ->
 		cmd = cmds.shift()
 
 		exec cmd, (code, output) ->
-			# console.log('Exit code:', code);
-			# console.log('Program output:', output);
+			console.log('Exit code:', code);
+			console.log('Program output:', output);
 			run cmds
 
 	run cmds

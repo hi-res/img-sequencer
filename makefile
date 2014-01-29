@@ -6,7 +6,7 @@ VERSION=0.0.3
 
 setup:
 	npm install
-	npm install -g shjs
+	npm install -g shelljs
 	npm install -g image-size
 	brew install imagemagick
 
