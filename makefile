@@ -9,6 +9,7 @@ setup:
 	npm install -g shelljs
 	npm install -g image-size
 	brew install imagemagick
+	brew install ghostscript
 
 watch:
 	@$(CS) -w -b -cj lib/index.js src/*.coffee
